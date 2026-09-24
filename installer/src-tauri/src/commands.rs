@@ -91,7 +91,7 @@ const MIN_PASSWORD_LEN: usize = 12;
 fn locale_of(app: &AppHandle) -> Locale {
     app.try_state::<AppLocale>()
         .map(|l| l.get())
-        .unwrap_or(Locale::En)
+        .unwrap_or(Locale::Zh)
 }
 
 fn user_err(locale: Locale, key: Key) -> String {
@@ -2896,7 +2896,7 @@ mod tests {
             "https://second-brain.demo.workers.dev/graph?tab=all",
         ] {
             assert_eq!(
-                normalize_worker_url(input, Locale::En).unwrap(),
+                normalize_worker_url(input, Locale::Zh).unwrap(),
                 "https://second-brain.demo.workers.dev",
                 "input: {input:?}"
             );
@@ -2906,7 +2906,7 @@ mod tests {
     #[test]
     fn rejects_garbage_urls() {
         for input in ["", "not a url", "ftp://bad.scheme"] {
-            assert!(normalize_worker_url(input, Locale::En).is_err(), "input: {input:?}");
+            assert!(normalize_worker_url(input, Locale::Zh).is_err(), "input: {input:?}");
         }
     }
 
@@ -2918,8 +2918,8 @@ mod tests {
             "http://localhost:8787/mcp",
         ] {
             assert_eq!(
-                normalize_worker_url(input, Locale::En).unwrap_err(),
-                i18n::t(Locale::En, Key::ErrorNeedsHttps),
+                normalize_worker_url(input, Locale::Zh).unwrap_err(),
+                i18n::t(Locale::Zh, Key::ErrorNeedsHttps),
                 "input: {input:?}"
             );
         }
@@ -2928,7 +2928,7 @@ mod tests {
     #[test]
     fn provisioning_errors_have_stable_machine_readable_shapes() {
         let existing = serde_json::to_value(existing_brain_error(
-            Locale::En,
+            Locale::Zh,
             "https://second-brain.example.workers.dev".into(),
         ))
         .unwrap();
@@ -2941,7 +2941,7 @@ mod tests {
         assert!(existing["message"].is_string());
 
         let conflict = serde_json::to_value(resource_conflict_error(
-            Locale::En,
+            Locale::Zh,
             crate::cf::provision::ResourceKind::MemoryStorage,
         ))
         .unwrap();
@@ -2950,7 +2950,7 @@ mod tests {
         assert_eq!(conflict["resourceKind"], "memoryStorage");
         assert!(conflict["message"].is_string());
 
-        let failed = serde_json::to_value(provisioning_failed_error(Locale::En)).unwrap();
+        let failed = serde_json::to_value(provisioning_failed_error(Locale::Zh)).unwrap();
         assert_eq!(failed["kind"], "provisioningFailed");
         assert_eq!(failed["errorKey"], "ErrorProvisioningDetail");
         assert!(failed["message"].is_string());
@@ -2969,10 +2969,10 @@ mod tests {
     #[test]
     fn connect_existing_credential_errors_have_stable_machine_readable_shapes() {
         for (locale, key, expected_error_key) in [
-            (Locale::En, Key::ErrorEmptyPassword, "ErrorEmptyPassword"),
-            (Locale::En, Key::ErrorWrongPassword, "ErrorWrongPassword"),
-            (Locale::It, Key::ErrorEmptyPassword, "ErrorEmptyPassword"),
-            (Locale::It, Key::ErrorWrongPassword, "ErrorWrongPassword"),
+            (Locale::Zh, Key::ErrorEmptyPassword, "ErrorEmptyPassword"),
+            (Locale::Zh, Key::ErrorWrongPassword, "ErrorWrongPassword"),
+            (Locale::Zh, Key::ErrorEmptyPassword, "ErrorEmptyPassword"),
+            (Locale::Zh, Key::ErrorWrongPassword, "ErrorWrongPassword"),
         ] {
             let value = serde_json::to_value(credential_error(locale, key)).unwrap();
             let object = value.as_object().expect("credential error is an object");
@@ -3062,7 +3062,7 @@ mod tests {
     fn rejects_junk() {
         for input in ["", "   ", "not a url at all!", "ftp://x.dev", "mailto:a@b.c"] {
             assert!(
-                normalize_worker_url(input, Locale::En).is_err(),
+                normalize_worker_url(input, Locale::Zh).is_err(),
                 "input: {input:?}"
             );
         }
@@ -3117,9 +3117,9 @@ mod tests {
         });
 
         assert_never_reads_the_keychain("dashboard_credentials in demo mode", || {
-            let _ = dashboard_credentials(&session, Locale::En);
+            let _ = dashboard_credentials(&session, Locale::Zh);
         });
-        let (url, token) = dashboard_credentials(&session, Locale::En).expect("demo credentials");
+        let (url, token) = dashboard_credentials(&session, Locale::Zh).expect("demo credentials");
         assert!(url.starts_with("http://127.0.0.1:"), "demo must use the local brain: {url}");
         assert_eq!(token, "demo");
 
@@ -3132,7 +3132,7 @@ mod tests {
         // keychain read used to hide.
         let fresh = SetupSession::new(true);
         assert_never_reads_the_keychain("an unconnected demo session", || {
-            let _ = dashboard_credentials(&fresh, Locale::En);
+            let _ = dashboard_credentials(&fresh, Locale::Zh);
         });
     }
 
@@ -3208,17 +3208,17 @@ mod tests {
     #[test]
     fn each_failure_shape_selects_the_screen_that_can_tell_the_truth() {
         assert_eq!(
-            rotation_failure(ProvisionError::HealthCheckFailed, Locale::En).stage,
+            rotation_failure(ProvisionError::HealthCheckFailed, Locale::Zh).stage,
             "unconfirmed",
             "the secret was accepted and only the confirmation ran out of attempts"
         );
         assert_eq!(
-            rotation_failure(ProvisionError::NotAWorkersDevAddress, Locale::En).stage,
+            rotation_failure(ProvisionError::NotAWorkersDevAddress, Locale::Zh).stage,
             "notSent",
             "refused by the #257 guard before the write — the script name is derived \
              from the address before anything is emitted or sent"
         );
-        assert_eq!(rotation_block(Locale::En).stage, "blocked");
+        assert_eq!(rotation_block(Locale::Zh).stage, "blocked");
         assert_eq!(RotateError::local(String::new()).stage, "local");
 
         // Distinct strings, checked as a set: two stages that happen to be spelled
@@ -3292,7 +3292,7 @@ mod tests {
         for error in after_the_put {
             let described = error.to_string();
             assert_eq!(
-                rotation_failure(error, Locale::En).stage,
+                rotation_failure(error, Locale::Zh).stage,
                 "unconfirmed",
                 "`{described}` was reported as notSent, whose screen tells the user \
                  their old password still works — which this app cannot know"
@@ -3309,7 +3309,7 @@ mod tests {
     /// button that could never get them out of it.
     #[test]
     fn a_deliberate_refusal_is_not_dressed_up_as_nothing_having_happened() {
-        let blocked = rotation_block(Locale::En);
+        let blocked = rotation_block(Locale::Zh);
         assert_eq!(blocked.stage, "blocked");
         assert_ne!(
             blocked.stage,
@@ -3317,9 +3317,9 @@ mod tests {
             "a block is not a failure to send: the retry the notSent screen offers \
              fails the same way, and an abandoned ledger never stops blocking"
         );
-        assert_eq!(blocked.detail, i18n::t(Locale::En, Key::ErrorRotateBlocked));
+        assert_eq!(blocked.detail, i18n::t(Locale::Zh, Key::ErrorRotateBlocked));
         assert_ne!(
-            rotation_block(Locale::It).detail,
+            rotation_block(Locale::Zh).detail,
             blocked.detail,
             "the detail must follow the app's locale"
         );
@@ -3402,20 +3402,20 @@ mod tests {
     fn the_failure_detail_is_localised_and_not_a_rust_error_string() {
         let english = rotation_failure(
             ProvisionError::Api(CfApiError::Unauthorized),
-            Locale::En,
+            Locale::Zh,
         );
-        assert_eq!(english.detail, i18n::t(Locale::En, Key::ErrorCfSignInExpired));
+        assert_eq!(english.detail, i18n::t(Locale::Zh, Key::ErrorCfSignInExpired));
 
         let italian = rotation_failure(
             ProvisionError::Api(CfApiError::Unauthorized),
-            Locale::It,
+            Locale::Zh,
         );
         assert_ne!(
             italian.detail, english.detail,
             "the detail must follow the app's locale"
         );
         assert!(
-            !rotation_failure(ProvisionError::HealthCheckFailed, Locale::En)
+            !rotation_failure(ProvisionError::HealthCheckFailed, Locale::Zh)
                 .detail
                 .is_empty(),
             "an empty detail renders as an empty sentence on the screen"
@@ -3791,14 +3791,14 @@ mod tests {
 
         // Asked and answered: a brain that has never been rebuilt does not block.
         assert!(
-            !rebuild_blocks_rotation(brain.base_url(), Some(PASSWORD), Locale::En).await,
+            !rebuild_blocks_rotation(brain.base_url(), Some(PASSWORD), Locale::Zh).await,
             "a brain with no ledger at all was treated as mid-rebuild"
         );
 
         // The one that matters. Nothing is listening on port 1, so the request
         // fails outright — and a question that could not be put is not a "yes".
         assert!(
-            !rebuild_blocks_rotation("http://127.0.0.1:1", Some(PASSWORD), Locale::En).await,
+            !rebuild_blocks_rotation("http://127.0.0.1:1", Some(PASSWORD), Locale::Zh).await,
             "a brain that could not be reached was reported as mid-rebuild, so a \
              network blip presents as a refusal to change a password and an \
              offline user can never change theirs"
@@ -3808,7 +3808,7 @@ mod tests {
         // back as an error, and this computer holding a stale password is a
         // reason to change it rather than grounds to forbid changing it.
         assert!(
-            !rebuild_blocks_rotation(brain.base_url(), Some("not-this-brains-password"), Locale::En)
+            !rebuild_blocks_rotation(brain.base_url(), Some("not-this-brains-password"), Locale::Zh)
                 .await,
             "a 401 from the rebuild check locked the user out of the flow that \
              fixes exactly that"
@@ -3816,7 +3816,7 @@ mod tests {
 
         // Door B has no password to ask with, so there is no question to put.
         assert!(
-            !rebuild_blocks_rotation(brain.base_url(), None, Locale::En).await,
+            !rebuild_blocks_rotation(brain.base_url(), None, Locale::Zh).await,
             "someone who has lost their password was turned away by a check that \
              needs the password they have lost"
         );
@@ -3825,11 +3825,11 @@ mod tests {
         // above is satisfied by a function that always says no. One batch of the
         // demo brain's 1,620 entries leaves a ledger with no `finishedAt`, which
         // is the in-progress state.
-        crate::migration::run_batch(brain.base_url(), PASSWORD, Locale::En)
+        crate::migration::run_batch(brain.base_url(), PASSWORD, Locale::Zh)
             .await
             .expect("one re-embed batch against the demo brain");
         assert!(
-            rebuild_blocks_rotation(brain.base_url(), Some(PASSWORD), Locale::En).await,
+            rebuild_blocks_rotation(brain.base_url(), Some(PASSWORD), Locale::Zh).await,
             "a rebuild is under way and the rotation was allowed through. Caught \
              half-way it leaves the next batch 401ing and the ledger stalling, so \
              a recoverable password problem presents as a failed rebuild — the \
@@ -3837,7 +3837,7 @@ mod tests {
         );
 
         // Which Door B still cannot be asked about, rebuild or no rebuild.
-        assert!(!rebuild_blocks_rotation(brain.base_url(), None, Locale::En).await);
+        assert!(!rebuild_blocks_rotation(brain.base_url(), None, Locale::Zh).await);
     }
 
     /// Every in-memory mode is decided before secure storage is consulted.
@@ -3933,7 +3933,7 @@ mod tests {
             let attempt = rotate_demo_password(
                 NEW,
                 &session,
-                Locale::En,
+                Locale::Zh,
                 |_| {},
                 |token| {
                     refreshed_with.lock().unwrap().push(token.to_string());
@@ -4011,7 +4011,7 @@ mod tests {
         let outcome = rotate_demo_password(
             "another-password-only-this-test-sets",
             &session,
-            Locale::En,
+            Locale::Zh,
             |_| {},
             |_| false,
         )
@@ -4037,7 +4037,7 @@ mod tests {
             "http://second-brain.acme.workers.dev/mcp",
         ] {
             assert!(
-                rotation_address(input, Locale::En).is_err(),
+                rotation_address(input, Locale::Zh).is_err(),
                 "{input} was accepted, so the new password goes out unprotected and \
                  an http:// origin is written to the keychain and the plaintext CLI \
                  config for every request after it"
@@ -4052,7 +4052,7 @@ mod tests {
             "  second-brain.acme.workers.dev/mcp  ",
         ] {
             assert_eq!(
-                rotation_address(input, Locale::En).unwrap(),
+                rotation_address(input, Locale::Zh).unwrap(),
                 "https://second-brain.acme.workers.dev",
                 "input: {input:?}"
             );
@@ -4061,8 +4061,8 @@ mod tests {
         // The shared normaliser now closes the cleartext hole for every typed
         // connection, including local-looking addresses.
         assert_eq!(
-            normalize_worker_url("http://localhost:8787/mcp", Locale::En).unwrap_err(),
-            i18n::t(Locale::En, Key::ErrorNeedsHttps)
+            normalize_worker_url("http://localhost:8787/mcp", Locale::Zh).unwrap_err(),
+            i18n::t(Locale::Zh, Key::ErrorNeedsHttps)
         );
     }
 
@@ -4081,7 +4081,7 @@ mod tests {
 
         // Door B: the address is typed, so there is no current password…
         let (url, current) =
-            rotation_target(&session, Locale::En, Some("second-brain.acme.workers.dev".into()))
+            rotation_target(&session, Locale::Zh, Some("second-brain.acme.workers.dev".into()))
                 .expect("a typed https address resolves");
         assert_eq!(url, "https://second-brain.acme.workers.dev");
         assert_eq!(
@@ -4092,13 +4092,13 @@ mod tests {
 
         // …and cleartext is refused here too, not only in the screen's validator.
         assert!(
-            rotation_target(&session, Locale::En, Some("http://second-brain.acme.workers.dev".into()))
+            rotation_target(&session, Locale::Zh, Some("http://second-brain.acme.workers.dev".into()))
                 .is_err()
         );
 
         // Door A: resolved from the session, with the password this computer holds.
         let (url, current) =
-            rotation_target(&session, Locale::En, None).expect("a connected computer resolves");
+            rotation_target(&session, Locale::Zh, None).expect("a connected computer resolves");
         assert_eq!(url, crate::demo_brain::base_url());
         assert_eq!(current.as_deref(), Some("demo"));
     }
@@ -4144,16 +4144,16 @@ mod tests {
         let session = SetupSession::new(true);
 
         assert_eq!(
-            confirm_target_is_a_brain("https://brain.example.com", &session, Locale::En)
+            confirm_target_is_a_brain("https://brain.example.com", &session, Locale::Zh)
                 .await
                 .unwrap_err(),
-            i18n::t(Locale::En, Key::ErrorCustomDomain),
+            i18n::t(Locale::Zh, Key::ErrorCustomDomain),
             "a custom domain yields no script name, and #257 says the script name \
              comes from the address or not at all"
         );
 
         // A real workers.dev address goes on to read the account's bindings.
-        confirm_target_is_a_brain("https://second-brain.demo.workers.dev", &session, Locale::En)
+        confirm_target_is_a_brain("https://second-brain.demo.workers.dev", &session, Locale::Zh)
             .await
             .expect("the demo account's bindings look like a brain");
     }
@@ -4207,8 +4207,8 @@ mod tests {
             ),
         ] {
             assert_eq!(
-                bindings_are_a_brains(&bindings, Locale::En).unwrap_err(),
-                i18n::t(Locale::En, Key::ErrorNotABrain),
+                bindings_are_a_brains(&bindings, Locale::Zh).unwrap_err(),
+                i18n::t(Locale::Zh, Key::ErrorNotABrain),
                 "{what} was accepted as a brain. A Door B typo then overwrites its \
                  AUTH_TOKEN while telling the user their brain's password changed."
             );
@@ -4220,7 +4220,7 @@ mod tests {
         // their own brain is not a brain.
         for name in brain_index_names() {
             assert!(
-                bindings_are_a_brains(&[d1(), vectorize(&name), kv()], Locale::En).is_ok(),
+                bindings_are_a_brains(&[d1(), vectorize(&name), kv()], Locale::Zh).is_ok(),
                 "{name} is an index this app's own brains are on, and it was refused"
             );
         }
@@ -4618,11 +4618,11 @@ mod tests {
         let session = SetupSession::new(false);
 
         assert_eq!(
-            cloudflare_client_for_brain("https://brain.example.com", &session, Locale::En)
+            cloudflare_client_for_brain("https://brain.example.com", &session, Locale::Zh)
                 .await
                 .map(|_| ())
                 .unwrap_err(),
-            i18n::t(Locale::En, Key::ErrorCustomDomain),
+            i18n::t(Locale::Zh, Key::ErrorCustomDomain),
             "a custom domain yields no subdomain to match, and retrying cannot help"
         );
 
@@ -4630,12 +4630,12 @@ mod tests {
             cloudflare_client_for_brain(
                 "https://second-brain.acme.workers.dev",
                 &session,
-                Locale::En
+                Locale::Zh
             )
             .await
             .map(|_| ())
             .unwrap_err(),
-            i18n::t(Locale::En, Key::ErrorCfSignInFirst),
+            i18n::t(Locale::Zh, Key::ErrorCfSignInFirst),
             "no Cloudflare session yet"
         );
 
@@ -4659,12 +4659,12 @@ mod tests {
             cloudflare_client_for_brain(
                 "https://second-brain.acme.workers.dev",
                 &session,
-                Locale::En
+                Locale::Zh
             )
             .await
             .map(|_| ())
             .unwrap_err(),
-            i18n::t(Locale::En, Key::ErrorWrongCfAccount),
+            i18n::t(Locale::Zh, Key::ErrorWrongCfAccount),
         );
     }
 
@@ -4712,20 +4712,20 @@ mod tests {
         crate::demo_brain::rotate_to(PASSWORD);
 
         assert_eq!(
-            password_opens_brain(brain.base_url(), PASSWORD, Locale::En).await,
+            password_opens_brain(brain.base_url(), PASSWORD, Locale::Zh).await,
             Ok(true),
             "the brain's own password did not open it"
         );
         assert_eq!(
-            password_opens_brain(brain.base_url(), "not-this-brains-password", Locale::En).await,
+            password_opens_brain(brain.base_url(), "not-this-brains-password", Locale::Zh).await,
             Ok(false),
             "a refused password must come back as an answer, not a fault: this \
              screen is asking a yes/no question and \"no\" is one of the answers \
              it was opened to receive"
         );
         assert_eq!(
-            password_opens_brain("http://127.0.0.1:1", PASSWORD, Locale::En).await,
-            Err(i18n::t(Locale::En, Key::ErrorReachBrain).to_string()),
+            password_opens_brain("http://127.0.0.1:1", PASSWORD, Locale::Zh).await,
+            Err(i18n::t(Locale::Zh, Key::ErrorReachBrain).to_string()),
             "\"could not ask\" is the third answer, and reporting it as `false` \
              tells someone their new password does not work when nothing was ever \
              asked — on the screen they opened because they did not know"
@@ -4734,7 +4734,7 @@ mod tests {
         // Surrounding whitespace is not a wrong password. The field is one a user
         // pastes into.
         assert_eq!(
-            password_opens_brain(brain.base_url(), &format!("  {PASSWORD}\n"), Locale::En).await,
+            password_opens_brain(brain.base_url(), &format!("  {PASSWORD}\n"), Locale::Zh).await,
             Ok(true),
             "a pasted password with whitespace around it was reported as refused"
         );
@@ -4747,7 +4747,7 @@ mod tests {
         // index is the case that matters and no demo brain here can be made to
         // report one, so this is the reachable half of it.
         assert_eq!(
-            password_opens_brain(&format!("{}/not-a-route", brain.base_url()), PASSWORD, Locale::En)
+            password_opens_brain(&format!("{}/not-a-route", brain.base_url()), PASSWORD, Locale::Zh)
                 .await,
             Ok(true),
             "the re-check answered \"your password does not work\" about a brain \
@@ -4784,7 +4784,7 @@ mod tests {
         const PASSWORD: &str = "the-password-this-revoke-test-sets";
         crate::demo_brain::rotate_to(PASSWORD);
 
-        let body = revoke_all_tools(brain.base_url(), PASSWORD, Locale::En)
+        let body = revoke_all_tools(brain.base_url(), PASSWORD, Locale::Zh)
             .await
             .expect("the brain's own password opens the route that closes the tools");
         assert_eq!(body["ok"], true);
@@ -4802,7 +4802,7 @@ mod tests {
         // Pressing it a second time reports nothing left, rather than closing the
         // same two again. The pass-through is only worth anything if the number
         // moves.
-        let again = revoke_all_tools(brain.base_url(), PASSWORD, Locale::En)
+        let again = revoke_all_tools(brain.base_url(), PASSWORD, Locale::Zh)
             .await
             .expect("nothing left to close is still a success");
         assert_eq!(again["revoked"], 0);
@@ -4811,12 +4811,12 @@ mod tests {
         // 401s like every other, and the user is shown a failure for a door that
         // was never even asked to close — which fails safe, and is why nothing
         // noticed the token was gone.
-        let refused = revoke_all_tools(brain.base_url(), "not-this-brains-password", Locale::En)
+        let refused = revoke_all_tools(brain.base_url(), "not-this-brains-password", Locale::Zh)
             .await
             .expect_err("a brain must not revoke anything for a password it refuses");
         assert_eq!(
             refused,
-            i18n::t(Locale::En, Key::ErrorBrainHttpStatus),
+            i18n::t(Locale::Zh, Key::ErrorBrainHttpStatus),
             "a backend status is logged internally; the UI receives only its stable localized key"
         );
         assert!(!refused.contains("401"), "leaked a raw status code: {refused}");
@@ -4824,10 +4824,10 @@ mod tests {
         // …and a brain that could not be reached at all says something else
         // again, because the two send the user to different places.
         assert_eq!(
-            revoke_all_tools("http://127.0.0.1:1", PASSWORD, Locale::En)
+            revoke_all_tools("http://127.0.0.1:1", PASSWORD, Locale::Zh)
                 .await
                 .unwrap_err(),
-            i18n::t(Locale::En, Key::ErrorReachBrain),
+            i18n::t(Locale::Zh, Key::ErrorReachBrain),
         );
     }
 
@@ -4839,7 +4839,7 @@ mod tests {
             worker_url: "https://second-brain.demo.workers.dev".into(),
             mcp_url: "https://second-brain.demo.workers.dev/mcp".into(),
         });
-        let (url, token) = dashboard_credentials(&session, Locale::En).unwrap();
+        let (url, token) = dashboard_credentials(&session, Locale::Zh).unwrap();
         assert_eq!(url, crate::demo_brain::base_url());
         assert!(url.starts_with("http://127.0.0.1:"), "got {url}");
         assert_eq!(token, "demo");

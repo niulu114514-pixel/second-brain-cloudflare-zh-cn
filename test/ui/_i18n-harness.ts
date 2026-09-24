@@ -5,7 +5,7 @@ import vm from "node:vm";
 
 const ROOT = resolve(import.meta.dirname, "../..");
 
-export function installI18n(ctx: any, locale: "en" | "it" | "zh" = "en") {
+export function installI18n(ctx: any, _locale: "en" | "it" | "zh" = "zh") {
   if (!ctx.localStorage) {
     const m = new Map<string, string>();
     ctx.localStorage = {
@@ -13,11 +13,10 @@ export function installI18n(ctx: any, locale: "en" | "it" | "zh" = "en") {
       setItem: (k: string, v: string) => m.set(k, v),
     };
   }
-  if (!ctx.navigator) ctx.navigator = { language: "en-US" };
+  if (!ctx.navigator) ctx.navigator = { language: "zh-CN" };
   if (!ctx.document) ctx.document = {};
-  if (!ctx.document.documentElement) ctx.document.documentElement = { lang: "en" };
+  if (!ctx.document.documentElement) ctx.document.documentElement = { lang: "zh-CN" };
   if (!ctx.document.querySelectorAll) ctx.document.querySelectorAll = () => [];
-  vm.runInContext(readFileSync(resolve(ROOT, "public/js/i18n-zh.js"), "utf8"), ctx);
   vm.runInContext(readFileSync(resolve(ROOT, "public/js/i18n.js"), "utf8"), ctx);
-  ctx.initI18n(locale);
+  ctx.initI18n();
 }

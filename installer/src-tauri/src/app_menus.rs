@@ -423,8 +423,8 @@ mod tests {
     /// The metadata is worthless if the roster is empty.
     #[test]
     fn about_metadata_carries_the_full_roster() {
-        let credits = crate::credits::credits_text(crate::i18n::Locale::En);
-        assert!(credits.contains("Created by"), "credits text has no creator line");
+        let credits = crate::credits::credits_text(crate::i18n::Locale::Zh);
+        assert!(credits.contains("创作者"), "credits text has no creator line");
         for person in crate::credits::MAINTAINERS {
             assert!(
                 credits.contains(person.name),

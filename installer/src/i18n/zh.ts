@@ -11,7 +11,7 @@ export const zh: Messages = {
     "copyLink": "复制链接",
     "copyAddress": "复制地址",
     "copyCommand": "复制命令",
-    "connect": "Connect",
+    "connect": "连接",
     "connecting": "连接中......",
     "connected": "连接✓",
     "openSettings": "打开设置",
@@ -29,12 +29,7 @@ export const zh: Messages = {
     "skipUpdateForNow": "暂时跳过更新"
   },
   "settings": {
-    "title": "设定",
-    "language": "语言",
-    "languageDesc": "选择第二大脑应用在这台电脑上的显示方式。",
-    "english": "English",
-    "italian": "Italiano",
-    "chinese": "简体中文"
+    "title": "设置"
   },
   "settingsPanel": {
     "title": "高级设置",

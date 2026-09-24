@@ -314,10 +314,20 @@
       }
 
       .auth-lockup {
-        display: block;
-        width: 174px;
-        height: auto;
+        display: flex;
+        align-items: center;
+        gap: 10px;
         margin-bottom: 28px;
+        color: var(--text-primary);
+        font-size: 20px;
+        font-weight: 750;
+        letter-spacing: 0.08em;
+      }
+
+      .auth-lockup img {
+        display: block;
+        width: 42px;
+        height: auto;
       }
 
       .auth-link {
@@ -2936,23 +2946,21 @@
       }
 
       .brand {
-        display: block;
+        display: flex;
+        align-items: center;
+        gap: 9px;
         width: 174px;
         margin: 2px 0 0 2px;
+        color: var(--text-primary);
+        font-size: 18px;
+        font-weight: 750;
+        letter-spacing: 0.08em;
       }
 
       .brand img {
         display: block;
-        width: 100%;
+        width: 38px;
         height: auto;
-      }
-
-      /* The ink lockup's wordmark is unreadable on a dark ground; swap in the
-         reverse (white-text) mark, same asset the site's own header/mobile
-         menu convention uses. */
-      html[data-theme='dark'] .brand img,
-      html[data-theme='dark'] .auth-lockup {
-        content: url(../brand-lockup-reverse.png);
       }
 
       .rail-status {

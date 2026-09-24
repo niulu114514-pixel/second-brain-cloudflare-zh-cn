@@ -138,15 +138,12 @@ async function maybeRevealHomeLayer(health) {
   else renderCaptureHint()
 }
 
-/** Leading words that make a sentence a question even without a question mark. */
-const ASK_OPENERS_EN =
-  /^(who|what|when|where|why|how|which|whose|did|do|does|is|are|was|were|can|could|should|would|will|have|has|had|am|tell me|show me|find|search|remind me what|list)\b/i
-/** Italian interrogatives only — statement starters like ho/sono/devo are excluded. */
-const ASK_OPENERS_IT =
-  /^(chi|cosa|quando|dove|perché|perche|come|quale|quali|di chi|può|puoi|posso|possono|dovrei|vorrei|dimmi|mostrami|trova|cerca|elenca)\b/i
+/** 即使没有问号，也能表明句子是问题的常见中文或外文开头。 */
+const ASK_OPENERS =
+  /^(谁|什么|何时|什么时候|哪里|在哪|为何|为什么|怎么|如何|哪个|哪些|是否|是不是|有没有|能否|可以|请问|告诉我|显示|查找|搜索|列出|who\b|what\b|when\b|where\b|why\b|how\b|which\b|whose\b|did\b|do\b|does\b|is\b|are\b|was\b|were\b|can\b|could\b|should\b|would\b|will\b|have\b|has\b|had\b|am\b|tell me\b|show me\b|find\b|search\b|list\b|chi\b|cosa\b|quando\b|dove\b|perché\b|perche\b|come\b|quale\b|quali\b|di chi\b|può\b|puoi\b|posso\b|possono\b|dovrei\b|vorrei\b|dimmi\b|mostrami\b|trova\b|cerca\b|elenca\b)/i
 
 function askOpenersForLocale() {
-  return getLocale() === 'it' ? ASK_OPENERS_IT : ASK_OPENERS_EN
+  return ASK_OPENERS
 }
 
 /**
@@ -162,8 +159,8 @@ function detectHomeMode(text) {
   if (!s) return null
   if (s.endsWith('?')) return 'ask'
   if (askOpenersForLocale().test(s)) return 'ask'
-  // "remember that…" / "note:" are explicit the other way.
-  if (/^(remind me to|ricordami di|remember|note|todo|log|ricorda|nota|promemoria|registra)\b/i.test(s))
+  // “记住……”或“备注：”明确表示保存。
+  if (/^(记住|记一下|记录|提醒我|待办|备注|笔记|remind me to\b|remember\b|note\b|todo\b|log\b|ricordami di\b|ricorda\b|nota\b|promemoria\b|registra\b)/i.test(s))
     return 'remember'
   return 'remember'
 }

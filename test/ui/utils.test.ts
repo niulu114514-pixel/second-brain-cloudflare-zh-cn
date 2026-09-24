@@ -312,7 +312,7 @@ describe("vectorizeHealthBanner", () => {
     expect(b).not.toBeNull();
     expect(b.title).toContain("second-brain-vectors");
     expect(b.command).toBe("npx wrangler vectorize create second-brain-vectors --dimensions=1024 --metric=cosine");
-    expect(b.gui).toContain("Vectorize Edit");
+    expect(b.gui).toContain("Vectorize 编辑权限");
   });
 
   it("falls back to the default index name when indexName is absent", () => {
@@ -326,7 +326,7 @@ describe("vectorizeBannerHtml", () => {
     const html = vectorizeBannerHtml({ title: "Index missing", command: "npx wrangler create", gui: "grant permission" });
     expect(html).toContain("Index missing");
     expect(html).toContain("npx wrangler create");
-    expect(html).toContain("How to fix");
+    expect(html).toContain("如何修复");
     expect(html).toContain("grant permission");
   });
 
@@ -553,15 +553,15 @@ describe("layerChipHtml", () => {
   it("names the author on a shared row", () => {
     const html = layerChipHtml({ workspace: "company", actor_name: "Second Brain" }, true);
     expect(html).toContain("tag-chip--shared");
-    expect(html).toContain("shared · Second Brain");
+    expect(html).toContain("已共享 · Second Brain");
     expect(html).toContain("ti-users-group");
-    expect(html).toContain("Visible to the whole team");
+    expect(html).toContain("对整个团队可见");
   });
 
   it("renders the bare chip when there is no author, and never the word null", () => {
     const html = layerChipHtml({ workspace: "company", actor_name: null }, true);
     expect(html).toContain("tag-chip--shared");
-    expect(html).toContain("</i> shared</span>");
+    expect(html).toContain("</i> 已共享</span>");
     expect(html).not.toContain("null");
     expect(html).not.toContain("·");
   });
@@ -585,6 +585,6 @@ describe("layerChipHtml", () => {
     expect(html).not.toContain("<script>");
     expect(html).toContain("&lt;script&gt;");
     // And the title attribute is still a single well-formed attribute.
-    expect(html).toContain('title="Visible to the whole team');
+    expect(html).toContain('title="对整个团队可见');
   });
 });

@@ -1050,7 +1050,7 @@ mod tests {
     #[tokio::test]
     async fn every_control_reads_as_its_default_level_not_custom() {
         let url = brain();
-        let view = settings::fetch_settings(&url, "demo", Locale::En).await.expect("view");
+        let view = settings::fetch_settings(&url, "demo", Locale::Zh).await.expect("view");
         for (control_id, level_id) in DEFAULT_LEVELS {
             let c = view.controls.iter().find(|c| c.id == *control_id).expect("control present");
             assert_eq!(
@@ -1143,12 +1143,12 @@ mod tests {
             &[],
             None,
             None,
-            Locale::En,
+            Locale::Zh,
         )
         .await
         .expect("save");
 
-        let view = settings::fetch_settings(&url, "demo", Locale::En).await.expect("view");
+        let view = settings::fetch_settings(&url, "demo", Locale::Zh).await.expect("view");
         let variety = view.controls.iter().find(|c| c.id == "variety").expect("variety");
         assert_eq!(variety.level.as_deref(), Some("varied"));
 
@@ -1171,12 +1171,12 @@ mod tests {
             &[],
             None,
             Some("@cf/qwen/qwen2.5-coder-32b-instruct".into()),
-            Locale::En,
+            Locale::Zh,
         )
         .await
         .expect("save");
 
-        let view = settings::fetch_settings(&url, "demo", Locale::En).await.expect("view");
+        let view = settings::fetch_settings(&url, "demo", Locale::Zh).await.expect("view");
         assert_eq!(view.insight_llm_model, "@cf/qwen/qwen2.5-coder-32b-instruct");
 
         // ...and the general-purpose model must be untouched by an insight-only save.
@@ -1186,7 +1186,7 @@ mod tests {
     #[tokio::test]
     async fn a_patch_records_a_sparse_override_and_leaves_the_defaults_alone() {
         let url = brain();
-        settings::patch_config(&url, "demo", &json!({ "MMR_LAMBDA": 0.45 }), Locale::En)
+        settings::patch_config(&url, "demo", &json!({ "MMR_LAMBDA": 0.45 }), Locale::Zh)
             .await
             .expect("patch");
         let (_, body) = get(&url, "/config").await;
@@ -1207,18 +1207,18 @@ mod tests {
             &[],
             None,
             None,
-            Locale::En,
+            Locale::Zh,
         )
         .await
         .expect("save");
-        settings::reset_control(&url, "demo", "recency", Locale::En).await.expect("reset");
+        settings::reset_control(&url, "demo", "recency", Locale::Zh).await.expect("reset");
 
         let (_, body) = get(&url, "/config").await;
         assert!(
             body["overrides"].as_object().expect("object").is_empty(),
             "a reset must delete the overrides, not write the default back"
         );
-        let view = settings::fetch_settings(&url, "demo", Locale::En).await.expect("view");
+        let view = settings::fetch_settings(&url, "demo", Locale::Zh).await.expect("view");
         let recency = view.controls.iter().find(|c| c.id == "recency").expect("recency");
         assert_eq!(recency.level.as_deref(), Some("balanced"));
     }
@@ -1230,7 +1230,7 @@ mod tests {
             &url,
             "demo",
             &json!({ "MMR_LAMBDA": 0.45, "NOT_A_SETTING": 1 }),
-            Locale::En,
+            Locale::Zh,
         )
         .await
         .expect_err("must be refused");
@@ -1548,7 +1548,7 @@ mod tests {
     #[tokio::test]
     async fn the_estimate_reports_a_plausible_brain_through_the_apps_own_parser() {
         let url = brain();
-        let est = crate::migration::fetch_estimate(&url, "demo", 384, Locale::En)
+        let est = crate::migration::fetch_estimate(&url, "demo", 384, Locale::Zh)
             .await
             .expect("estimate");
         // Pinned as literals, not against the constants: comparing a constant to
@@ -1562,13 +1562,13 @@ mod tests {
     #[tokio::test]
     async fn status_is_null_until_a_rebuild_starts_then_carries_what_the_window_reads() {
         let url = brain();
-        let before = crate::migration::fetch_status(&url, "demo", Locale::En).await.expect("status");
+        let before = crate::migration::fetch_status(&url, "demo", Locale::Zh).await.expect("status");
         assert!(before["state"].is_null(), "no rebuild has ever been started");
         assert_eq!(before["model"], json!(DEMO_EMBEDDING_MODEL));
 
-        crate::migration::run_batch(&url, "demo", Locale::En).await.expect("batch");
+        crate::migration::run_batch(&url, "demo", Locale::Zh).await.expect("batch");
 
-        let after = crate::migration::fetch_status(&url, "demo", Locale::En).await.expect("status");
+        let after = crate::migration::fetch_status(&url, "demo", Locale::Zh).await.expect("status");
         let state = &after["state"];
         assert!(!state.is_null(), "a started rebuild must be on record");
         // The keys installer/src/settings.ts reads off MigrationRun.
@@ -1590,7 +1590,7 @@ mod tests {
         let mut last_remaining = u64::MAX;
         let mut processed_total = 0;
         loop {
-            let p = crate::migration::run_batch(&url, "demo", Locale::En).await.expect("batch");
+            let p = crate::migration::run_batch(&url, "demo", Locale::Zh).await.expect("batch");
             batches += 1;
             assert!(!p.stalled, "the default demo must run to completion");
             assert_eq!(p.total, 1620, "the bar counts up to the owner's brain size");
@@ -1612,7 +1612,7 @@ mod tests {
         assert!(batches > 10, "a one-batch rebuild proves nothing, got {batches}");
         assert_eq!(processed_total, 1620, "every entry must be accounted for");
 
-        let status = crate::migration::fetch_status(&url, "demo", Locale::En).await.expect("status");
+        let status = crate::migration::fetch_status(&url, "demo", Locale::Zh).await.expect("status");
         assert!(
             status["state"]["finishedAt"].is_u64(),
             "a completed rebuild must be recorded as finished"
@@ -1631,13 +1631,13 @@ mod tests {
 
         let mut before = 0;
         for _ in 0..3 {
-            let p = crate::migration::run_batch(&url, "demo", Locale::En).await.expect("batch");
+            let p = crate::migration::run_batch(&url, "demo", Locale::Zh).await.expect("batch");
             assert!(!p.stalled);
             before = ENTRIES - p.remaining;
         }
         assert!(before > 0, "there must be progress to keep");
 
-        let paused = crate::migration::run_batch(&url, "demo", Locale::En).await.expect("batch");
+        let paused = crate::migration::run_batch(&url, "demo", Locale::Zh).await.expect("batch");
         assert!(paused.stalled, "the fourth batch must pause");
         assert!(!paused.done);
         assert_eq!(paused.processed, 0, "a paused batch achieves nothing");
@@ -1650,7 +1650,7 @@ mod tests {
         // Resume: one pause per demo, so the rest of the rebuild completes.
         let mut batches = 0;
         loop {
-            let p = crate::migration::run_batch(&url, "demo", Locale::En).await.expect("batch");
+            let p = crate::migration::run_batch(&url, "demo", Locale::Zh).await.expect("batch");
             batches += 1;
             assert!(!p.stalled, "resuming must not pause again");
             if p.done {
@@ -1663,9 +1663,9 @@ mod tests {
     #[tokio::test]
     async fn reset_clears_the_ledger_so_status_reads_null_again() {
         let url = brain();
-        crate::migration::run_batch(&url, "demo", Locale::En).await.expect("batch");
-        crate::migration::reset(&url, "demo", Locale::En).await.expect("reset");
-        let status = crate::migration::fetch_status(&url, "demo", Locale::En).await.expect("status");
+        crate::migration::run_batch(&url, "demo", Locale::Zh).await.expect("batch");
+        crate::migration::reset(&url, "demo", Locale::Zh).await.expect("reset");
+        let status = crate::migration::fetch_status(&url, "demo", Locale::Zh).await.expect("status");
         assert!(status["state"].is_null(), "the ledger must be gone");
     }
 
@@ -1675,23 +1675,23 @@ mod tests {
     async fn changing_the_target_model_restarts_the_rebuild() {
         let url = brain();
         for _ in 0..3 {
-            crate::migration::run_batch(&url, "demo", Locale::En).await.expect("batch");
+            crate::migration::run_batch(&url, "demo", Locale::Zh).await.expect("batch");
         }
-        let partway = crate::migration::run_batch(&url, "demo", Locale::En).await.expect("batch");
+        let partway = crate::migration::run_batch(&url, "demo", Locale::Zh).await.expect("batch");
         assert!(partway.remaining < ENTRIES);
 
-        crate::migration::patch_embedding_model(&url, "demo", "@cf/baai/bge-base-en-v1.5", Locale::En)
+        crate::migration::patch_embedding_model(&url, "demo", "@cf/baai/bge-base-en-v1.5", Locale::Zh)
             .await
             .expect("model write");
 
-        let restarted = crate::migration::run_batch(&url, "demo", Locale::En).await.expect("batch");
+        let restarted = crate::migration::run_batch(&url, "demo", Locale::Zh).await.expect("batch");
         assert_eq!(
             restarted.remaining,
             ENTRIES - restarted.processed,
             "a new target must rebuild from the beginning"
         );
 
-        let status = crate::migration::fetch_status(&url, "demo", Locale::En).await.expect("status");
+        let status = crate::migration::fetch_status(&url, "demo", Locale::Zh).await.expect("status");
         assert_eq!(status["state"]["model"], json!("@cf/baai/bge-base-en-v1.5"));
         assert_eq!(status["model"], json!("@cf/baai/bge-base-en-v1.5"));
     }
@@ -1701,10 +1701,10 @@ mod tests {
     #[tokio::test]
     async fn the_estimate_follows_the_model_in_force() {
         let url = brain();
-        crate::migration::patch_embedding_model(&url, "demo", "@cf/baai/bge-large-en-v1.5", Locale::En)
+        crate::migration::patch_embedding_model(&url, "demo", "@cf/baai/bge-large-en-v1.5", Locale::Zh)
             .await
             .expect("model write");
-        let est = crate::migration::fetch_estimate(&url, "demo", 384, Locale::En).await.expect("estimate");
+        let est = crate::migration::fetch_estimate(&url, "demo", 384, Locale::Zh).await.expect("estimate");
         assert_eq!(est.current_model, "@cf/baai/bge-large-en-v1.5");
     }
 
@@ -1729,7 +1729,7 @@ mod tests {
     #[tokio::test]
     async fn health_names_the_index_the_current_model_implies() {
         let url = brain();
-        crate::migration::patch_embedding_model(&url, "demo", "@cf/baai/bge-base-en-v1.5", Locale::En)
+        crate::migration::patch_embedding_model(&url, "demo", "@cf/baai/bge-base-en-v1.5", Locale::Zh)
             .await
             .expect("model write");
         let (_, body) = get(&url, "/health").await;

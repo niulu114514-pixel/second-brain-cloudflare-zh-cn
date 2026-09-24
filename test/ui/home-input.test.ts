@@ -141,12 +141,12 @@ describe("the visible prediction", () => {
 
     field.value = "what did I decide?";
     ctx.onHomeInput(field);
-    expect(ctx.document.getElementById("home-mode-label").textContent).toBe("will search");
+    expect(ctx.document.getElementById("home-mode-label").textContent).toBe("将搜索");
     expect(ctx.document.getElementById("home-mode").style.visibility).toBe("visible");
 
     field.value = "pricing floor is $6k";
     ctx.onHomeInput(field);
-    expect(ctx.document.getElementById("home-mode-label").textContent).toBe("will remember");
+    expect(ctx.document.getElementById("home-mode-label").textContent).toBe("将记住");
 
     field.value = "";
     ctx.onHomeInput(field);
@@ -159,15 +159,15 @@ describe("the visible prediction", () => {
 
     field.value = "pricing floor is $6k";
     ctx.onHomeInput(field);
-    expect(ctx.document.getElementById("home-mode-label").textContent).toBe("will remember");
+    expect(ctx.document.getElementById("home-mode-label").textContent).toBe("将记住");
 
     ctx.toggleHomeMode();
-    expect(ctx.document.getElementById("home-mode-label").textContent).toBe("will search");
+    expect(ctx.document.getElementById("home-mode-label").textContent).toBe("将搜索");
 
     // Typing must not silently undo a decision the user just made.
     field.value = "pricing floor is $6k per project";
     ctx.onHomeInput(field);
-    expect(ctx.document.getElementById("home-mode-label").textContent).toBe("will search");
+    expect(ctx.document.getElementById("home-mode-label").textContent).toBe("将搜索");
   });
 });
 
@@ -176,11 +176,11 @@ describe("greeting", () => {
 
   it("tracks the time of day", () => {
     const at = (h: number) => greetingFor(new Date(2026, 7, 8, h, 0, 0));
-    expect(at(2)).toBe("Still up");
-    expect(at(9)).toBe("Good morning");
-    expect(at(14)).toBe("Good afternoon");
-    expect(at(19)).toBe("Good evening");
-    expect(at(23)).toBe("Late one");
+    expect(at(2)).toBe("还没睡");
+    expect(at(9)).toBe("早上好");
+    expect(at(14)).toBe("下午好");
+    expect(at(19)).toBe("晚上好");
+    expect(at(23)).toBe("夜深了");
   });
 });
 
@@ -216,7 +216,7 @@ describe("leaving home, and coming back", () => {
     // And the override is gone, so typing predicts again.
     field.value = "what did I decide?";
     ctx.onHomeInput(field);
-    expect(ctx.document.getElementById("home-mode-label").textContent).toBe("will search");
+    expect(ctx.document.getElementById("home-mode-label").textContent).toBe("将搜索");
   });
 
   it("puts home back", () => {

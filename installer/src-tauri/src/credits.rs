@@ -80,17 +80,17 @@ mod tests {
 
     #[test]
     fn credits_include_creator_and_maintainers() {
-        let text = credits_text(Locale::En);
+        let text = credits_text(Locale::Zh);
         assert!(text.contains("Rahil Pirani"));
         assert!(text.contains("Vincenzo Fabiano"));
-        assert!(text.contains("Created by"));
+        assert!(text.contains("创作者"));
         assert!(!text.contains("dependabot"));
         assert!(!text.contains("bot]"));
     }
 
     #[test]
     fn credits_localized_in_italian() {
-        let text = credits_text(Locale::It);
+        let text = credits_text(Locale::Zh);
         assert!(text.contains("Creato da"));
         assert!(text.contains("Manutentori:"));
     }

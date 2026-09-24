@@ -670,7 +670,7 @@ mod tests {
     #[tokio::test]
     async fn the_estimate_carries_the_models_the_picker_needs() {
         let (url, seen) = spawn_worker(200);
-        let est = fetch_estimate(&url, "tok", 384, Locale::En).await.expect("estimate");
+        let est = fetch_estimate(&url, "tok", 384, Locale::Zh).await.expect("estimate");
 
         assert_eq!(est.entries, 1620);
         assert_eq!(est.chunks_at_least, 2100);
@@ -686,7 +686,7 @@ mod tests {
     #[tokio::test]
     async fn a_batch_reports_the_fields_the_loop_needs() {
         let (url, _) = spawn_worker(200);
-        let p = run_batch(&url, "tok", Locale::En).await.expect("batch");
+        let p = run_batch(&url, "tok", Locale::Zh).await.expect("batch");
         assert_eq!(p.processed, 5);
         assert_eq!(p.remaining, 95);
         assert!(!p.done);
@@ -699,10 +699,10 @@ mod tests {
     #[tokio::test]
     async fn an_older_brain_is_told_to_update_rather_than_shown_a_404() {
         let (url, _) = spawn_worker(404);
-        let err = fetch_estimate(&url, "tok", 384, Locale::En).await.unwrap_err();
+        let err = fetch_estimate(&url, "tok", 384, Locale::Zh).await.unwrap_err();
         assert_eq!(
             err,
-            i18n::t(Locale::En, Key::ErrorBrainNeedsUpdateForMigration)
+            i18n::t(Locale::Zh, Key::ErrorBrainNeedsUpdateForMigration)
         );
         assert!(!err.contains("404"), "leaked a status code to the user: {err}");
     }
@@ -710,8 +710,8 @@ mod tests {
     #[tokio::test]
     async fn a_server_error_uses_the_stable_key_without_raw_detail() {
         let (url, _) = spawn_worker(500);
-        let err = fetch_estimate(&url, "tok", 384, Locale::En).await.unwrap_err();
-        assert_eq!(err, i18n::t(Locale::En, Key::ErrorBrainHttpStatus));
+        let err = fetch_estimate(&url, "tok", 384, Locale::Zh).await.unwrap_err();
+        assert_eq!(err, i18n::t(Locale::Zh, Key::ErrorBrainHttpStatus));
         assert!(!err.contains("500"), "leaked a raw status code: {err}");
         assert!(!err.contains('{'), "leaked a response body: {err}");
     }
@@ -719,16 +719,16 @@ mod tests {
     #[tokio::test]
     async fn an_unreachable_brain_says_so() {
         // Nothing is listening on this port.
-        let err = fetch_estimate("http://127.0.0.1:1", "tok", 384, Locale::En)
+        let err = fetch_estimate("http://127.0.0.1:1", "tok", 384, Locale::Zh)
             .await
             .unwrap_err();
-        assert_eq!(err, i18n::t(Locale::En, Key::ErrorReachBrain));
+        assert_eq!(err, i18n::t(Locale::Zh, Key::ErrorReachBrain));
     }
 
     #[tokio::test]
     async fn a_trailing_slash_in_the_stored_address_does_not_double_up() {
         let (url, seen) = spawn_worker(200);
-        fetch_estimate(&format!("{url}/"), "tok", 384, Locale::En)
+        fetch_estimate(&format!("{url}/"), "tok", 384, Locale::Zh)
             .await
             .expect("estimate");
         let log = seen.lock().unwrap();

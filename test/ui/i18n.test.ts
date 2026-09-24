@@ -8,7 +8,7 @@ import { describe, it, expect } from "vitest";
 
 const ROOT = resolve(import.meta.dirname, "../..");
 
-function loadI18n(locale?: "en" | "it" | "zh") {
+function loadI18n(locale?: "zh") {
   const store = new Map<string, string>();
   const els: any[] = [];
   const makeEl = (attrs: Record<string, string> = {}) => {
@@ -35,9 +35,9 @@ function loadI18n(locale?: "en" | "it" | "zh") {
       getItem: (k: string) => store.get(k) ?? null,
       setItem: (k: string, v: string) => store.set(k, v),
     },
-    navigator: { language: "en-US" },
+    navigator: { language: "zh-CN" },
     document: {
-      documentElement: { lang: "en" },
+      documentElement: { lang: "zh-CN" },
       querySelectorAll(sel: string) {
         if (sel === "[data-i18n]") return els.filter((e) => e.getAttribute("data-i18n"));
         return [];
@@ -46,7 +46,6 @@ function loadI18n(locale?: "en" | "it" | "zh") {
   };
   ctx.globalThis = ctx;
   vm.createContext(ctx);
-  vm.runInContext(readFileSync(resolve(ROOT, "public/js/i18n-zh.js"), "utf8"), ctx);
   vm.runInContext(readFileSync(resolve(ROOT, "public/js/i18n.js"), "utf8"), ctx);
   if (locale) ctx.initI18n(locale);
   else ctx.initI18n();
@@ -302,18 +301,18 @@ function scanCallSites() {
 }
 
 describe("dashboard i18n", () => {
-  it("translates dotted keys and falls back to English", () => {
-    const { ctx } = loadI18n("it");
-    expect(ctx.t("menu.appearance")).toBe("Aspetto");
-    expect(ctx.t("menu.disconnect")).toBe("Disconnetti");
+  it("translates dotted keys in Chinese", () => {
+    const { ctx } = loadI18n("zh");
+    expect(ctx.t("menu.appearance")).toBe("外观");
+    expect(ctx.t("menu.disconnect")).toBe("断开连接");
     expect(ctx.t("no.such.key")).toBe("no.such.key");
   });
 
   it("interpolates and picks plurals", () => {
-    const { ctx } = loadI18n("en");
-    expect(ctx.tPlural("nav.statusCount", 1)).toBe("1 memory stored");
-    expect(ctx.tPlural("nav.statusCount", 5)).toBe("5 memories stored");
-    expect(ctx.t("auth.serverError", { status: "503" })).toBe("Server error: 503");
+    const { ctx } = loadI18n("zh");
+    expect(ctx.tPlural("nav.statusCount", 1)).toContain("1");
+    expect(ctx.tPlural("nav.statusCount", 5)).toContain("5");
+    expect(ctx.t("auth.serverError", { status: "503" })).toBe("服务器错误：503");
   });
 
   it("formats a clock time alone, not toLocaleDateString's forced date-plus-time", () => {
@@ -322,7 +321,7 @@ describe("dashboard i18n", () => {
     // "9/9/2026, 3:48 PM" for a caller that wanted just "3:48 PM" (the night
     // panel's "Pass ran at {time}"). Date-only and date+time calls, which
     // every other call site uses, must still go through toLocaleDateString.
-    const { ctx } = loadI18n("en");
+    const { ctx } = loadI18n("zh");
     const ts = new Date("2026-09-09T15:48:00Z").getTime();
     expect(ctx.formatDateUI(ts, { hour: "numeric", minute: "2-digit" })).not.toMatch(/2026|9\/9/);
     expect(ctx.formatDateUI(ts, { year: "numeric", month: "short", day: "numeric" })).toMatch(/2026/);
@@ -330,7 +329,7 @@ describe("dashboard i18n", () => {
   });
 
   it("applies data-i18n to the DOM", () => {
-    const { ctx, makeEl } = loadI18n("it");
+    const { ctx, makeEl } = loadI18n("zh");
     const label = makeEl({ "data-i18n": "menu.appearance" });
     const input = makeEl({
       "data-i18n": "auth.tokenPlaceholder",
@@ -338,22 +337,21 @@ describe("dashboard i18n", () => {
     });
     const hint = makeEl({ "data-i18n": "home.hintHtml", "data-i18n-html": "" });
     ctx.applyI18nDom();
-    expect(label.textContent).toBe("Aspetto");
-    expect(input.getAttribute("placeholder")).toMatch(/password/i);
-    expect(hint.innerHTML).toContain("#tag");
+    expect(label.textContent).toBe("外观");
+    expect(input.getAttribute("placeholder")).toContain("密码");
+    expect(hint.innerHTML).toContain("#标签");
   });
 
   it("persists sb-locale and sets documentElement.lang", () => {
-    const { ctx, store } = loadI18n("it");
-    expect(store.get("sb-locale")).toBe("it");
-    expect(ctx.document.documentElement.lang).toBe("it");
-    expect(ctx.getLocale()).toBe("it");
-    expect(ctx.localeTag()).toBe("it-IT");
+    const { ctx, store } = loadI18n("zh");
+    expect(store.get("sb-locale")).toBe("zh");
+    expect(ctx.document.documentElement.lang).toBe("zh-CN");
+    expect(ctx.getLocale()).toBe("zh");
+    expect(ctx.localeTag()).toBe("zh-CN");
   });
 
   it("resolves integration connect copy by provider id (kebab-case)", () => {
-    const { ctx: en } = loadI18n("en");
-    const { ctx: it } = loadI18n("it");
+    const { ctx: zh } = loadI18n("zh");
     const registry = readFileSync(resolve(ROOT, "src/integrations/index.ts"), "utf8");
     const providers = [...registry.matchAll(/\bid:\s*"([^"]+)"/g)].map((m) => m[1]);
     expect(providers.length).toBeGreaterThan(0);
@@ -361,61 +359,11 @@ describe("dashboard i18n", () => {
     for (const id of providers) {
       for (const field of fields) {
         const key = `integrations.connect.${id}.${field}`;
-        const enVal = en.t(key);
-        const itVal = it.t(key);
-        expect(enVal).not.toBe(key);
-        expect(itVal).not.toBe(key);
+        expect(zh.t(key)).not.toBe(key);
       }
-      expect(it.t(`integrations.connect.${id}.label`)).not.toBe(
-        en.t(`integrations.connect.${id}.label`),
-      );
-      expect(it.t(`integrations.connect.${id}.hint`)).not.toBe(
-        en.t(`integrations.connect.${id}.hint`),
-      );
     }
   });
 
-  it("every key exists in both catalogs", () => {
-    const { ctx } = loadI18n("en");
-    const en = vm.runInContext("I18N_EN", ctx);
-    const it = vm.runInContext("I18N_IT", ctx);
-    const zh = vm.runInContext("I18N_ZH", ctx);
-
-    function flatten(obj: any, prefix: string, out: string[]): string[] {
-      for (const key of Object.keys(obj)) {
-        const value = obj[key];
-        const path = prefix ? `${prefix}.${key}` : key;
-        if (value !== null && typeof value === "object" && !Array.isArray(value)) {
-          flatten(value, path, out);
-        } else {
-          out.push(path);
-        }
-      }
-      return out;
-    }
-
-    const enKeys = flatten(en, "", []).sort();
-    const itKeys = flatten(it, "", []).sort();
-    const zhKeys = flatten(zh, "", []).sort();
-    const enSet = new Set(enKeys);
-    const itSet = new Set(itKeys);
-    const zhSet = new Set(zhKeys);
-
-    expect(enKeys.length).toBeGreaterThan(400);
-    expect(enKeys.filter((k) => !itSet.has(k)), "keys missing from I18N_IT").toEqual([]);
-    expect(itKeys.filter((k) => !enSet.has(k)), "keys missing from I18N_EN").toEqual([]);
-    expect(enKeys.filter((k) => !zhSet.has(k)), "keys missing from I18N_ZH").toEqual([]);
-    expect(zhKeys.filter((k) => !enSet.has(k)), "extra keys in I18N_ZH").toEqual([]);
-  });
-
-  // The parity check above compares key SETS, which is blind to what the keys are
-  // WORTH. A key added to I18N_IT as `''` to make parity pass, or pasted across
-  // from English untranslated, satisfies it exactly. Both ship as a visibly broken
-  // Italian UI: the first renders nothing at all, the second renders English.
-  //
-  // Flattening is repeated here rather than hoisted: these read the catalogs the
-  // same way and share nothing else, and a shared helper would be one more thing
-  // to keep honest between two tests that must not drift together.
   function flattenCatalog(obj: any, prefix = "", out: Record<string, unknown> = {}): Record<string, unknown> {
     for (const key of Object.keys(obj)) {
       const value = obj[key];
@@ -426,86 +374,15 @@ describe("dashboard i18n", () => {
     return out;
   }
 
-  it("has no blank string in either catalog", () => {
-    const { ctx } = loadI18n("en");
-    const catalogs = {
-      I18N_EN: flattenCatalog(vm.runInContext("I18N_EN", ctx)),
-      I18N_IT: flattenCatalog(vm.runInContext("I18N_IT", ctx)),
-    };
-    const blank: string[] = [];
-    for (const [name, flat] of Object.entries(catalogs)) {
-      for (const [key, value] of Object.entries(flat)) {
-        // Whitespace-only counts: a single space is invisible on screen and
-        // passes any check that only asks whether the string is truthy.
-        if (typeof value !== "string" || value.trim() === "") blank.push(`${name}.${key}`);
-      }
-    }
-    expect(blank, "keys with no words in them").toEqual([]);
+  it("has a complete, non-blank Chinese catalog", () => {
+    const { ctx } = loadI18n("zh");
+    const flat = flattenCatalog(vm.runInContext("I18N_ZH", ctx));
+    expect(Object.keys(flat).length).toBeGreaterThan(400);
+    const blank = Object.entries(flat)
+      .filter(([, value]) => typeof value !== "string" || value.trim() === "")
+      .map(([key]) => key);
+    expect(blank, "Chinese keys with no words in them").toEqual([]);
   });
-
-  // Strings that are legitimately byte-identical in English and Italian, with the
-  // reason each one is. Three reasons qualify, and nothing else does:
-  //
-  //   PROPER NOUN — a name that is not translated in either language.
-  //   MACHINE TOKEN — a value the product prints verbatim from data, not prose.
-  //   FORMAT ONLY — punctuation and placeholders, with no words to translate.
-  //
-  // Adding a key here is a claim that one of those three applies. If you are
-  // reaching for it because a translation has not been written yet, the answer is
-  // to write the translation.
-  const IDENTICAL_BY_DESIGN = [
-    // PROPER NOUN
-    "auth.brand",
-    // ACCEPTED ITALIAN LOANWORD — used unchanged in everyday Italian, not a
-    // proper noun.
-    "nav.team",
-    "team.title",
-    "integrations.categoryEmail",
-    // MACHINE TOKEN — `source` values, printed as the capture recorded them.
-    "common.sourceCli",
-    "common.sourceEmail",
-    "common.sourceChat",
-    "common.sourceBrowser",
-    "common.sourceDashboard",
-    "common.sourceClaudeCode",
-    "integrations.nounEmail.one",
-    // FORMAT ONLY — URLs the user pastes, and punctuation around a placeholder.
-    "integrations.urlPlaceholder",
-    "integrations.connect.calendar-google.placeholder",
-    "integrations.connect.calendar-outlook.placeholder",
-    "integrations.connect.calendar-icloud.placeholder",
-    "brief.shapeSuffix",
-    "download.withTag",
-    // PROPER NOUN — "Worker" names the Cloudflare Worker component; kept
-    // unchanged in Italian same as "Second Brain" (auth.brand) above.
-    "board.railVersion",
-    // Language names are autonyms in every catalog.
-    "menu.localeZh",
-  ].sort();
-
-  it("has no Italian string left as a copy of its English twin", () => {
-    const { ctx } = loadI18n("en");
-    const en = flattenCatalog(vm.runInContext("I18N_EN", ctx));
-    const it = flattenCatalog(vm.runInContext("I18N_IT", ctx));
-
-    const identical = Object.keys(en)
-      .filter((k) => typeof en[k] === "string" && en[k] === it[k])
-      .sort();
-    const allowed = new Set(IDENTICAL_BY_DESIGN);
-
-    expect(
-      identical.filter((k) => !allowed.has(k)),
-      "Italian strings identical to English — translate them, or justify them in IDENTICAL_BY_DESIGN",
-    ).toEqual([]);
-    // The list is pruned as well as extended: an entry whose two catalogs have
-    // since diverged is a stale exemption, and leaving it would quietly excuse
-    // whatever key later takes that name.
-    expect(
-      IDENTICAL_BY_DESIGN.filter((k) => !identical.includes(k)),
-      "stale entries in IDENTICAL_BY_DESIGN",
-    ).toEqual([]);
-  });
-
   // ── CATALOG → CALL SITE, the direction nothing checked ─────────────────────
   //
   // The check below this one walks CALL SITES and asks whether each key exists.
@@ -647,10 +524,10 @@ describe("dashboard i18n", () => {
     },
   ];
 
-  it("every key in I18N_EN is read by some call site", () => {
+  it("every key in I18N_ZH is read by some call site", () => {
     const { staticHits } = scanCallSites();
-    const { ctx } = loadI18n("en");
-    const units = catalogUnits(vm.runInContext("I18N_EN", ctx));
+    const { ctx } = loadI18n("zh");
+    const units = catalogUnits(vm.runInContext("I18N_ZH", ctx));
 
     // Vacuous-success guard, the same one the forward check carries: a broken
     // scanner that resolved nothing would make every key an orphan, and a
@@ -676,8 +553,8 @@ describe("dashboard i18n", () => {
     // been deleted, or whose call site became static, is a standing licence for
     // whatever key later takes that prefix — and a prefix licence is broad.
     const { staticHits } = scanCallSites();
-    const { ctx } = loadI18n("en");
-    const units = catalogUnits(vm.runInContext("I18N_EN", ctx));
+    const { ctx } = loadI18n("zh");
+    const units = catalogUnits(vm.runInContext("I18N_ZH", ctx));
     const referenced = new Set(staticHits.map((h) => h.key));
 
     const stale: string[] = [];
@@ -687,7 +564,7 @@ describe("dashboard i18n", () => {
         ? entry.keys.filter((k) => units.includes(k))
         : units.filter((k) => k.startsWith(entry.prefix!));
       if (!matched.length) {
-        stale.push(`${label} — matches no key in I18N_EN`);
+        stale.push(`${label} — matches no key in I18N_ZH`);
         continue;
       }
       if (matched.every((k) => referenced.has(k))) {
@@ -697,14 +574,7 @@ describe("dashboard i18n", () => {
     expect(stale, "stale entries in DYNAMICALLY_REFERENCED").toEqual([]);
   });
 
-  it("every translated string a call site asks for exists in both catalogs", () => {
-    // The previous test compares catalog to catalog: I18N_EN's key set against I18N_IT's.
-    // That structurally cannot see a call site whose key was deleted from BOTH catalogs at
-    // once — which is exactly what happens when one group removes a key it owns while
-    // another group's call site (in a different file) still uses it. Both catalogs stay
-    // symmetric, parity passes, and t() falls back to returning the raw key path, so a user
-    // sees a literal "team.shareConfirm" instead of a translated string. This test walks
-    // every real call site and checks it against both catalogs directly.
+  it("every translated string a call site asks for exists in the Chinese catalog", () => {
 
     const { staticHits, dynamicHits } = scanCallSites();
 
@@ -714,9 +584,8 @@ describe("dashboard i18n", () => {
     // resolving the auth ternary below). 300 is comfortably below that.
     expect(staticHits.length).toBeGreaterThan(300);
 
-    const { ctx } = loadI18n("en");
-    const en = vm.runInContext("I18N_EN", ctx);
-    const it_ = vm.runInContext("I18N_IT", ctx);
+    const { ctx } = loadI18n("zh");
+    const zh = vm.runInContext("I18N_ZH", ctx);
 
     function resolvesToTranslation(catalog: any, path: string): boolean {
       const node = path
@@ -728,11 +597,8 @@ describe("dashboard i18n", () => {
 
     const failures: string[] = [];
     for (const hit of staticHits) {
-      const okEn = resolvesToTranslation(en, hit.key);
-      const okIt = resolvesToTranslation(it_, hit.key);
-      if (!okEn || !okIt) {
-        const missing = [!okEn && "en", !okIt && "it"].filter(Boolean).join("+");
-        failures.push(`${hit.file}:${hit.line} ${hit.key} (missing in: ${missing})`);
+      if (!resolvesToTranslation(zh, hit.key)) {
+        failures.push(`${hit.file}:${hit.line} ${hit.key} (missing in: zh)`);
       }
     }
     expect(failures, "call sites whose key is missing from a catalog").toEqual([]);

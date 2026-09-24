@@ -607,7 +607,7 @@ mod tests {
     #[tokio::test]
     async fn fetch_settings_maps_the_workers_config_to_selected_levels() {
         let (url, _) = spawn_worker();
-        let view = fetch_settings(&url, "tok", Locale::En).await.expect("view");
+        let view = fetch_settings(&url, "tok", Locale::Zh).await.expect("view");
 
         // The Worker returned its shipped defaults, so every control must read
         // as its default level.
@@ -622,7 +622,7 @@ mod tests {
     #[tokio::test]
     async fn fetch_settings_marks_the_two_forward_only_controls() {
         let (url, _) = spawn_worker();
-        let view = fetch_settings(&url, "tok", Locale::En).await.unwrap();
+        let view = fetch_settings(&url, "tok", Locale::Zh).await.unwrap();
         let forward: Vec<&str> = view.controls.iter().filter(|c| c.forward_only).map(|c| c.id).collect();
         assert_eq!(forward, vec!["duplicates", "compression"]);
     }
@@ -630,7 +630,7 @@ mod tests {
     #[tokio::test]
     async fn fetch_settings_sends_the_bearer_token() {
         let (url, seen) = spawn_worker();
-        fetch_settings(&url, "secret-token", Locale::En).await.unwrap();
+        fetch_settings(&url, "secret-token", Locale::Zh).await.unwrap();
         let log = seen.lock().unwrap();
         assert!(log[0].contains("auth=Bearer secret-token"), "got: {}", log[0]);
     }
@@ -638,7 +638,7 @@ mod tests {
     #[tokio::test]
     async fn apply_level_patches_only_that_controls_keys() {
         let (url, seen) = spawn_worker();
-        apply_settings(&url, "tok", &[("variety".into(), "varied".into())], &[], None, None, Locale::En)
+        apply_settings(&url, "tok", &[("variety".into(), "varied".into())], &[], None, None, Locale::Zh)
             .await
             .unwrap();
         let log = seen.lock().unwrap();
@@ -651,7 +651,7 @@ mod tests {
     #[tokio::test]
     async fn apply_level_rejects_an_unknown_level_without_calling_the_worker() {
         let (url, seen) = spawn_worker();
-        let err = apply_settings(&url, "tok", &[("variety".into(), "nonsense".into())], &[], None, None, Locale::En).await;
+        let err = apply_settings(&url, "tok", &[("variety".into(), "nonsense".into())], &[], None, None, Locale::Zh).await;
         assert!(err.is_err());
         assert!(seen.lock().unwrap().is_empty(), "must not hit the Worker for an invalid level");
     }
@@ -660,7 +660,7 @@ mod tests {
     async fn apply_level_surfaces_the_workers_validation_message() {
         let (url, _) = spawn_worker();
         // The fake Worker 400s on a body containing "BAD".
-        let err = patch_config(&url, "tok", &serde_json::json!({"BAD": 99}), Locale::En)
+        let err = patch_config(&url, "tok", &serde_json::json!({"BAD": 99}), Locale::Zh)
             .await
             .expect_err("should fail");
         assert!(err.contains("must be between 0 and 1"), "lost the Worker's message: {err}");
@@ -669,7 +669,7 @@ mod tests {
     #[tokio::test]
     async fn reset_control_deletes_every_key_the_control_owns() {
         let (url, seen) = spawn_worker();
-        reset_control(&url, "tok", "recency", Locale::En).await.unwrap();
+        reset_control(&url, "tok", "recency", Locale::Zh).await.unwrap();
         let log = seen.lock().unwrap();
         assert_eq!(log.len(), 3, "recency owns three keys, got {} calls", log.len());
         for key in control("recency").unwrap().keys {
@@ -683,14 +683,14 @@ mod tests {
     #[tokio::test]
     async fn reset_control_rejects_an_unknown_control_without_calling_the_worker() {
         let (url, seen) = spawn_worker();
-        assert!(reset_control(&url, "tok", "nope", Locale::En).await.is_err());
+        assert!(reset_control(&url, "tok", "nope", Locale::Zh).await.is_err());
         assert!(seen.lock().unwrap().is_empty());
     }
 
     #[tokio::test]
     async fn an_unreachable_worker_is_a_readable_error_not_a_panic() {
         // Port 1 is reserved and will refuse instantly.
-        let err = fetch_settings("http://127.0.0.1:1", "tok", Locale::En).await;
+        let err = fetch_settings("http://127.0.0.1:1", "tok", Locale::Zh).await;
         assert!(err.is_err());
     }
 
@@ -703,7 +703,7 @@ mod tests {
     /// cannot know what Rust defines.
     #[test]
     fn every_control_and_level_has_copy_in_both_locales() {
-        for locale_file in ["en.ts", "it.ts", "zh.ts"] {
+        for locale_file in ["zh.ts"] {
             let path = format!("{}/../src/i18n/{}", env!("CARGO_MANIFEST_DIR"), locale_file);
             let src = std::fs::read_to_string(&path).unwrap_or_else(|e| panic!("read {path}: {e}"));
             let start = src.find("settingsPanel:").unwrap_or_else(|| panic!("{locale_file} has no settingsPanel"));
@@ -737,7 +737,7 @@ mod tests {
     #[tokio::test]
     async fn every_control_in_the_view_names_its_default_level() {
         let (url, _) = spawn_worker();
-        let view = fetch_settings(&url, "tok", Locale::En).await.unwrap();
+        let view = fetch_settings(&url, "tok", Locale::Zh).await.unwrap();
         for c in &view.controls {
             assert!(!c.default_level.is_empty(), "{} has no default level in the view", c.id);
         }
@@ -778,7 +778,7 @@ mod tests {
             wanted.len()
         );
 
-        for locale in ["en.ts", "it.ts", "zh.ts"] {
+        for locale in ["zh.ts"] {
             let src = std::fs::read_to_string(format!(
                 "{}/../src/i18n/{}",
                 env!("CARGO_MANIFEST_DIR"),
@@ -845,7 +845,7 @@ mod tests {
             }
         });
 
-        let err = fetch_settings(&format!("http://127.0.0.1:{port}"), "tok", Locale::En)
+        let err = fetch_settings(&format!("http://127.0.0.1:{port}"), "tok", Locale::Zh)
             .await
             .expect_err("404 must be an error");
 
@@ -866,7 +866,7 @@ mod tests {
             &[],
             None,
             None,
-            Locale::En,
+            Locale::Zh,
         ).await.unwrap();
 
         let log = seen.lock().unwrap();
@@ -882,7 +882,7 @@ mod tests {
     #[tokio::test]
     async fn saving_includes_the_model_when_it_changed() {
         let (url, seen) = spawn_worker();
-        apply_settings(&url, "tok", &[], &[], Some("@cf/some/model".into()), None, Locale::En)
+        apply_settings(&url, "tok", &[], &[], Some("@cf/some/model".into()), None, Locale::Zh)
             .await
             .unwrap();
         let log = seen.lock().unwrap();
@@ -893,7 +893,7 @@ mod tests {
     #[tokio::test]
     async fn saving_includes_the_insight_model_when_it_changed() {
         let (url, seen) = spawn_worker();
-        apply_settings(&url, "tok", &[], &[], None, Some("@cf/some/insight-model".into()), Locale::En)
+        apply_settings(&url, "tok", &[], &[], None, Some("@cf/some/insight-model".into()), Locale::Zh)
             .await
             .unwrap();
         let log = seen.lock().unwrap();
@@ -909,7 +909,7 @@ mod tests {
             &url, "tok", &[], &[],
             Some("@cf/some/model".into()),
             Some("@cf/some/insight-model".into()),
-            Locale::En,
+            Locale::Zh,
         )
         .await
         .unwrap();
@@ -923,7 +923,7 @@ mod tests {
     #[tokio::test]
     async fn saving_a_reset_deletes_that_controls_keys() {
         let (url, seen) = spawn_worker();
-        apply_settings(&url, "tok", &[], &["recency".into()], None, None, Locale::En)
+        apply_settings(&url, "tok", &[], &["recency".into()], None, None, Locale::Zh)
             .await
             .unwrap();
         let log = seen.lock().unwrap();
@@ -934,14 +934,14 @@ mod tests {
     #[tokio::test]
     async fn saving_nothing_makes_no_requests() {
         let (url, seen) = spawn_worker();
-        apply_settings(&url, "tok", &[], &[], None, None, Locale::En).await.unwrap();
+        apply_settings(&url, "tok", &[], &[], None, None, Locale::Zh).await.unwrap();
         assert!(seen.lock().unwrap().is_empty(), "an empty save must not call the Worker");
     }
 
     #[tokio::test]
     async fn saving_an_unknown_level_fails_before_any_request() {
         let (url, seen) = spawn_worker();
-        let r = apply_settings(&url, "tok", &[("variety".into(), "nope".into())], &[], None, None, Locale::En).await;
+        let r = apply_settings(&url, "tok", &[("variety".into(), "nope".into())], &[], None, None, Locale::Zh).await;
         assert!(r.is_err());
         assert!(seen.lock().unwrap().is_empty(), "must validate before writing anything");
     }

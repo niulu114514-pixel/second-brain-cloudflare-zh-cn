@@ -18,7 +18,7 @@ import {
 } from "./shared";
 import { PROBE_TIMEOUT_MS, fetchRoleProbe, roleFromProbe, type ConnectionRole } from "./connection-role";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { getLocale, initI18n, LOCALE_CHANGE_EVENT, t } from "./i18n";
+import { initI18n, LOCALE_CHANGE_EVENT, t } from "./i18n";
 import {
   blockedCopy,
   localFailureCopy,
@@ -246,10 +246,7 @@ function valuePanel(): HTMLElement | null {
       // it, every locale draws the same mark, and a reader would otherwise
       // hear an opening quote that never closes.
       h("span", { class: "value-mark", "aria-hidden": "true" }, ["“"]),
-      // `lang` on the quote and not on the band: the testimonials are English
-      // in both locales, so an Italian reader's synthesiser has to switch
-      // voice for these words and back again for the furniture around them.
-      h("blockquote", { class: "value-quote", lang: "en" }, [quote.text]),
+      h("blockquote", { class: "value-quote", lang: "zh-CN" }, [quote.text]),
     ]),
     h("figcaption", { class: "value-attrib" }, [
       h("strong", { class: "value-author" }, [quote.author]),
@@ -764,14 +761,11 @@ function brainPickerScreen(found: DiscoveredBrain[]) {
  * anything is even sent to Cloudflare, so the member-recovery ghost action
  * would otherwise appear on a field the user simply hasn't filled in yet.
  */
-const WRONG_CREDENTIAL_ERROR_TEXT: Record<"en" | "it" | "zh", string> = {
-  en: "That password or team sign-in token does not work for this Second Brain. Check the invitation or password and try again.",
-  it: "Questa password o questo token di accesso del team non funziona per questo Second Brain. Controlla l'invito o la password e riprova.",
-  zh: "该密码或团队登录令牌对此第二大脑不适用。请检查邀请或密码，再试一次。",
-};
+const WRONG_CREDENTIAL_ERROR_TEXT =
+  "该密码或团队登录令牌对此第二大脑不适用。请检查邀请或密码，再试一次。";
 
 function isCredentialError(errorMsg: string | undefined): boolean {
-  return !!errorMsg && errorMsg === WRONG_CREDENTIAL_ERROR_TEXT[getLocale()];
+  return !!errorMsg && errorMsg === WRONG_CREDENTIAL_ERROR_TEXT;
 }
 
 /**

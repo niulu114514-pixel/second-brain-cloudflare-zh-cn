@@ -55,9 +55,7 @@ export type QuoteId =
 export interface Quote {
   id: QuoteId;
   /**
-   * The words as published, English in both locales. Four of the eight are
-   * shortened to the sentences that carry the point; none is reworded, and
-   * nothing is added.
+   * 用户评价的简体中文译文。
    */
   text: string;
   author: string;
@@ -71,7 +69,7 @@ export const SOURCE_LABEL_KEYS: Record<SourceId, `value.${string}`> = {
 };
 
 /**
- * The eight testimonials published on thesecondbrain.dev, verbatim.
+ * thesecondbrain.dev 上八条用户评价的简体中文译文。
  *
  * Not a marketing pool to be added to freely: every one of these is a real
  * person's public post, so the text belongs to them. Edit only to trim, and
@@ -81,61 +79,55 @@ export const QUOTES: Record<QuoteId, Quote> = {
   aron: {
     id: "aron",
     text:
-      "Finally something that solves the most frustrating part of using AI. " +
-      "The recall by meaning actually works.",
+      "终于有东西解决了使用 AI 时最令人沮丧的问题。按含义召回确实有效。",
     author: "Aron Woolman",
     source: "productHunt",
   },
   rupert: {
     id: "rupert",
     text:
-      "Boring-in-a-good-way infrastructure. Explicit control is the saner version.",
+      "朴实却可靠的基础设施。明确可控才是更稳妥的做法。",
     author: "rupert_at_work",
     source: "reddit",
   },
   vahid: {
     id: "vahid",
     text:
-      "The interesting part isn't just 'memory,' it's whether the system can " +
-      "tell what is still true vs what was only temporary context.",
+      "有趣的不只是“记忆”，而是系统能否分辨哪些仍然有效，哪些只是临时上下文。",
     author: "Vahid Davoudi",
     source: "productHunt",
   },
   birgul: {
     id: "birgul",
     text:
-      "The semantic recall saved me from re-explaining a project setup I had " +
-      "already detailed the day before.",
+      "语义召回让我不必再次解释前一天已经详细说明过的项目设置。",
     author: "Birgül",
     source: "productHunt",
   },
   mustafa: {
     id: "mustafa",
-    text: "The resolution logic IS the product — everything else is storage.",
+    text: "冲突处理逻辑才是产品本身，其他部分只是存储。",
     author: "Mustafa Arian",
     source: "productHunt",
   },
   nicolo: {
     id: "nicolo",
     text:
-      "A clever setup, especially running entirely on the free tier. " +
-      "Memory is the new moat for agents.",
+      "设计很巧妙，尤其是完全可以在免费套餐上运行。记忆正成为智能体的新护城河。",
     author: "nicoloboschi",
     source: "reddit",
   },
   needleworker: {
     id: "needleworker",
     text:
-      "The 85–95 flagged tier is the clever bit. Most setups hard-dedupe at " +
-      "one threshold and lose the partial overlaps that actually carry new context.",
+      "85–95 的标记区间很聪明。多数方案只用单一阈值强制去重，会丢掉那些真正包含新上下文的部分重叠。",
     author: "NeedleworkerSmart486",
     source: "reddit",
   },
   gludius: {
     id: "gludius",
     text:
-      "Love the included iOS shortcuts + bookmarklet. I've built so many of " +
-      "those for personal use; this brings it to another level.",
+      "很喜欢内置的 iOS 快捷指令和书签工具。我为自己做过很多类似工具，而这个方案把它提升到了新的层次。",
     author: "GludiusMaximus",
     source: "reddit",
   },

@@ -1,4 +1,4 @@
-export type Locale = "en" | "it" | "zh";
+export type Locale = "zh";
 
 /** One named level of a multi-value control (#246). */
 export type LevelCopy = {
@@ -36,11 +36,6 @@ export type Messages = {
   };
   settings: {
     title: string;
-    language: string;
-    languageDesc: string;
-    english: string;
-    italian: string;
-    chinese: string;
   };
   settingsPanel: {
     title: string;
@@ -183,8 +178,8 @@ export type Messages = {
   };
   /**
    * The editorial band above the task (`valuePanel.ts`). Furniture only: the
-   * testimonials themselves are other people's published words and stay in
-   * English in both locales, so nothing here is a quote.
+   * testimonials themselves are translated in `valuePanel.ts`, so nothing
+   * here is a quote.
    */
   value: {
     /** The kicker line over the pull quote. */

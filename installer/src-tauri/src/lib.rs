@@ -43,7 +43,7 @@ fn open_dashboard_from_menu(app: &AppHandle) {
             let locale = app
                 .try_state::<AppLocale>()
                 .map(|l| l.get())
-                .unwrap_or(i18n::Locale::En);
+                .unwrap_or(i18n::Locale::Zh);
             if not_connected_yet(session.dry_run, secure_store::load_setup) {
                 let _ = windows::open_setup_window(app);
             } else {
@@ -88,7 +88,7 @@ fn sync_notion_from_menu(app: &AppHandle) {
     let locale = app
         .try_state::<AppLocale>()
         .map(|l| l.get())
-        .unwrap_or(i18n::Locale::En);
+        .unwrap_or(i18n::Locale::Zh);
     let app = app.clone();
     tauri::async_runtime::spawn(async move {
         let message = match commands::notion_sync(&info.worker_url, &info.auth_token, locale).await
@@ -115,7 +115,7 @@ fn confirm_logout(app: &AppHandle) {
     let locale = app
         .try_state::<AppLocale>()
         .map(|l| l.get())
-        .unwrap_or(i18n::Locale::En);
+        .unwrap_or(i18n::Locale::Zh);
     let handle = app.clone();
     app.dialog()
         .message(i18n::t(locale, Key::LogoutMessage))

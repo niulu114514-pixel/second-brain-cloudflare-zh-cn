@@ -20,7 +20,7 @@ import {
   legacyWorkerFromDetailsProbe,
   roleFromDetailsProbe,
 } from "./connection-role";
-import { initI18n, settingsSection, t } from "./i18n";
+import { initI18n, t } from "./i18n";
 import "./style.css";
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
@@ -38,7 +38,6 @@ async function boot() {
       void getCurrentWindow().setTitle(t("details.title"));
       app.replaceChildren(
         h("div", { class: "screen" }, [
-          settingsSection(() => renderNotSetup()),
           h("h1", {}, [t("details.notSetupTitle")]),
           h("p", { class: "lede" }, [t("details.notSetupLede")]),
         ]),
@@ -164,7 +163,6 @@ async function boot() {
       ...(update
         ? [updateCard(update.availableVersion, canUpdateWorker(connectionRole, legacyWorker), legacyWorker)]
         : []),
-      settingsSection(() => render()),
       logoutSection(),
     ];
   };

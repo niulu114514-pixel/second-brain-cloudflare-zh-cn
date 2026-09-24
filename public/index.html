@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Second Brain" />
     <meta name="theme-color" content="#ffffff" />
-    <title>Second Brain</title>
+    <title>第二大脑</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
     <link rel="icon" type="image/svg+xml" href="/sb-mark-square.svg" />
     <link rel="manifest" href="/manifest.json" />
@@ -20,9 +20,9 @@
   <body>
     <div id="auth-overlay">
       <div class="auth-card">
-        <img class="auth-lockup" src="/brand-lockup.png" alt="" width="174" height="25" />
-        <h1 data-i18n="auth.brand">Second Brain</h1>
-        <p data-i18n="auth.subtitle">Enter your Bearer token to connect to your personal memory layer. This is the password you chose when you set up Second Brain.</p>
+        <div class="auth-lockup"><img src="/brand-mark.png" alt="" width="42" height="25" /><span>第二大脑</span></div>
+        <h1 data-i18n="auth.brand">第二大脑</h1>
+        <p data-i18n="auth.subtitle">输入你的访问令牌，连接个人记忆空间。它就是你设置第二大脑时选择的密码。</p>
         <form
           class="field-group"
           onsubmit="
@@ -32,11 +32,11 @@
         >
           <input type="text" name="username" value="user" autocomplete="username" style="display: none" />
           <input type="url" id="auth-url" autocomplete="off" autocapitalize="none" />
-          <input type="password" id="auth-token" placeholder="Bearer token (your setup password)" data-i18n="auth.tokenPlaceholder" data-i18n-attr="placeholder" autocomplete="current-password" />
-          <button id="auth-connect" type="submit" data-i18n="auth.connect">Connect</button>
+          <input type="password" id="auth-token" placeholder="访问令牌（设置时使用的密码）" data-i18n="auth.tokenPlaceholder" data-i18n-attr="placeholder" autocomplete="current-password" />
+          <button id="auth-connect" type="submit" data-i18n="auth.connect">连接</button>
         </form>
         <div id="auth-error"></div>
-        <button type="button" class="auth-link" id="auth-invite-toggle" aria-expanded="false" aria-controls="auth-invite-help" onclick="toggleInviteHelp()" data-i18n="auth.haveInvite">I received a team invite</button>
+        <button type="button" class="auth-link" id="auth-invite-toggle" aria-expanded="false" aria-controls="auth-invite-help" onclick="toggleInviteHelp()" data-i18n="auth.haveInvite">我收到了团队邀请</button>
         <div class="auth-invite-help" id="auth-invite-help" style="display: none">
           <ol>
             <li data-i18n="auth.inviteStep1">Leave the address above as it is — it is already this team's Second Brain.</li>
@@ -50,7 +50,7 @@
     <div id="app" style="display: none">
       <div id="sidebar">
         <div class="brand">
-          <img src="/brand-lockup.png" alt="Second Brain" width="567" height="80" />
+          <img src="/brand-mark.png" alt="" width="42" height="25" /><span>第二大脑</span>
         </div>
         <div class="rail-status">
           <!-- Which company's shared layer this member writes into. Hidden on a
@@ -82,7 +82,7 @@
         <div id="topbar">
           <img src="/brand-mark.png" alt="" width="32" height="19" />
           <div class="topbar-info">
-            <div class="topbar-name">Second Brain</div>
+            <div class="topbar-name">第二大脑</div>
             <!-- Same line the sidebar carries. The sidebar is hidden on phone
                  widths, so without this a member on their phone never learns
                  which team they are sharing into. -->
@@ -775,14 +775,6 @@
         <div class="menu-group">
           <div class="menu-group-label" data-i18n="menu.groupThisApp">This app</div>
           <div class="theme-row">
-            <span class="theme-row-label" data-i18n="menu.language">Language</span>
-            <div class="theme-toggle" id="locale-toggle">
-              <button data-locale-val="en" onclick="setLocale('en')" title="English" data-i18n="menu.localeEn" data-i18n-attr="title"><span data-i18n="menu.localeEn">English</span></button>
-              <button data-locale-val="it" onclick="setLocale('it')" title="Italian" data-i18n="menu.localeIt" data-i18n-attr="title"><span data-i18n="menu.localeIt">Italian</span></button>
-              <button data-locale-val="zh" onclick="setLocale('zh')" title="简体中文" data-i18n="menu.localeZh" data-i18n-attr="title"><span data-i18n="menu.localeZh">简体中文</span></button>
-            </div>
-          </div>
-          <div class="theme-row">
             <span class="theme-row-label" data-i18n="menu.appearance">Appearance</span>
             <div class="theme-toggle" id="theme-toggle">
               <button data-theme-val="light" onclick="setTheme('light')" title="Light" data-i18n="menu.themeLight" data-i18n-attr="title"><i class="ti ti-sun"></i></button>
@@ -901,7 +893,6 @@
     <!-- The growth chart's one shared hover/keyboard tooltip (js/chart.js). -->
     <div class="tip" id="board-tip" role="tooltip"></div>
 
-    <script src="js/i18n-zh.js"></script>
     <script src="js/i18n.js"></script>
     <script src="utils.js"></script>
     <script src="credits.js"></script>

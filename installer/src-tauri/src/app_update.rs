@@ -17,7 +17,7 @@ pub fn check_for_updates(app: &AppHandle, silent: bool) {
         let locale = app
             .try_state::<AppLocale>()
             .map(|l| l.get())
-            .unwrap_or(i18n::Locale::En);
+            .unwrap_or(i18n::Locale::Zh);
         match run_check(&app).await {
             Ok(Some(update)) => prompt_and_install(&app, update, locale).await,
             Ok(None) => {

@@ -1,10 +1,10 @@
 //! Simplified Chinese strings for native menus, dialogs, and command errors.
-//! Keys with platform-specific branching fall back to the English source.
+//! 单语言版本中的每个原生界面键都必须在此处有中文文案。
 
 use crate::i18n::Key;
 
-pub fn t(key: Key) -> Option<&'static str> {
-    Some(match key {
+pub fn t(key: Key) -> &'static str {
+    match key {
         Key::MenuOpenDashboard => "打开仪表盘",
         Key::MenuConnections => "连接…",
         Key::MenuSyncNotion => "立即同步 Notion",
@@ -30,6 +30,7 @@ pub fn t(key: Key) -> Option<&'static str> {
         Key::OAuthDeniedTitle => "登录取消",
         Key::OAuthDeniedBody => "你可以关闭这个标签页。回到第二大脑应用再试一次。",
         Key::LogoutTitle => "登出",
+        Key::LogoutMessage => "这会从此电脑移除第二大脑的连接信息。你保存的记忆仍会保留在 Cloudflare 中。",
         Key::LogoutConfirm => "登出",
         Key::Cancel => "取消",
         Key::NotionSyncTitle => "Notion 同步",
@@ -45,6 +46,7 @@ pub fn t(key: Key) -> Option<&'static str> {
         Key::AppUpdateFailedTitle => "更新还没完成",
         Key::AppUpdateFailedMessage => "安装更新时出了问题。您的应用未被更改——请稍后再试。",
         Key::WorkerUpdateTitle => "更新您的第二大脑",
+        Key::WorkerUpdateMessage => "将你的第二大脑更新到版本 {version}。记忆、密码和连接的工具都会保留。",
         Key::OpenDashboardFailed => "我们打不开第二大脑仪表盘。再试一次“打开我的第二大脑仪表盘”。如果还是打不开，重启应用。",
         Key::OpenDashboardNotSetup => "设置尚未完成。返回第二大脑应用，完成设置。",
         Key::WindowSecondBrain => "第二大脑",
@@ -75,6 +77,9 @@ pub fn t(key: Key) -> Option<&'static str> {
         Key::ErrorNotionUpToDate => "Notion 已经是最新状态。",
         Key::ErrorCfAccountListFailed => "您已登录，但我们无法读取您的 Cloudflare 账户。请尝试重新登录。",
         Key::ErrorUnknownEmbeddingModel => "此应用无法更改当前搜索设置。请更新您的 第二大脑，然后再试。",
+        Key::ErrorBrainNeedsUpdateForMigration => "这个第二大脑需要先更新，才能更改语义搜索模型。请完成更新后再试。",
+        Key::ErrorMigrationHalfSwitched => "搜索索引切换只完成了一部分。请继续迁移，完成前搜索结果可能不完整。",
+        Key::ErrorCannotDeleteLiveIndex => "无法删除当前正在使用的搜索索引。请先切换到新的索引。",
         Key::ErrorNoOldIndexToFree => "没有剩余的搜索数据可释放。未进行任何更改。",
         Key::ErrorCfNoSubdomain => "我们无法找到此 Cloudflare 账户的网页地址。请改为粘贴您的 第二大脑 地址。",
         Key::ErrorCfDiscoverFailed => "我们暂时无法搜索此 Cloudflare 账户。请改为粘贴您的 第二大脑 地址。",
@@ -85,10 +90,13 @@ pub fn t(key: Key) -> Option<&'static str> {
         Key::ErrorComputerNotSetup => "此计算机尚未连接到 第二大脑。请返回设置并选择创建或连接。",
         Key::ErrorCustomDomain => "此 第二大脑 使用了此应用无法更新的网页地址。如果是您设置的，请从仪表板进行更新；否则，请联系设置它的人。",
         Key::ErrorWrongCfAccount => "此 Cloudflare 账户未托管此 第二大脑。请使用创建它的账户登录。如果是别人创建的，请让他们进行更新。",
+        Key::ErrorBrainRefusedPassword => "第二大脑拒绝了应用发送的新密码。请检查连接状态后重试。",
         Key::ErrorProvisioningDetail => "创建您的 第二大脑 时设置中断。请重试。如果问题持续，请联系支持并提供此次尝试的时间。",
         Key::ErrorBrainHttpStatus => "您的 第二大脑 未按预期响应。请稍后再试。",
         Key::ErrorBrainUnexpected => "您的 第二大脑 发送了此应用无法使用的响应。请稍后再试。",
         Key::ErrorNotionSyncFailed => "同步未完成。请从仪表板再次尝试。",
+        Key::ErrorRotateBlocked => "目前无法更改密码，因为另一项设置操作仍在进行。请稍后再试。",
+        Key::ErrorRotateNeedsHttps => "只有使用 HTTPS 地址时才能安全更改密码。请检查第二大脑地址。",
         Key::ErrorRotateNotConfirmed => "您的 第二大脑 未能及时确认新密码。",
         Key::ErrorRotateSecureStore => "您的密码已更改，但我们无法将其保存到此设备的安全存储中。",
         Key::ErrorNeedsHttps => "该地址以 http 开头，而不是 https。您的密码将会未加密传输。请检查地址——应以 https://. 开头。",
@@ -98,6 +106,5 @@ pub fn t(key: Key) -> Option<&'static str> {
         Key::ResourceKindMemoryStorage => "一个记忆存储",
         Key::ResourceKindSmartSearch => "一个智能搜索索引",
         Key::ResourceKindWebApp => "一个网页应用",
-        _ => return None,
-    })
+    }
 }
