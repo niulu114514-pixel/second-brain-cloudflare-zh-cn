@@ -64,7 +64,7 @@ export const DEFAULTS = {
 
   // ── Models (src/lib/ai.ts) ──
   LLM_MODEL: "@cf/meta/llama-4-scout-17b-16e-instruct",
-  EMBEDDING_MODEL: "@cf/baai/bge-small-en-v1.5",
+  EMBEDDING_MODEL: "@cf/baai/bge-m3",
   // Used only by src/insight/reason.ts's pair-reasoning call — everything
   // else above keeps using LLM_MODEL. See the cost comment on
   // constants.INSIGHT_LLM_MODEL for why this is a separate setting.

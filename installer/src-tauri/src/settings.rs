@@ -703,7 +703,7 @@ mod tests {
     /// cannot know what Rust defines.
     #[test]
     fn every_control_and_level_has_copy_in_both_locales() {
-        for locale_file in ["en.ts", "it.ts"] {
+        for locale_file in ["en.ts", "it.ts", "zh.ts"] {
             let path = format!("{}/../src/i18n/{}", env!("CARGO_MANIFEST_DIR"), locale_file);
             let src = std::fs::read_to_string(&path).unwrap_or_else(|e| panic!("read {path}: {e}"));
             let start = src.find("settingsPanel:").unwrap_or_else(|| panic!("{locale_file} has no settingsPanel"));
@@ -778,7 +778,7 @@ mod tests {
             wanted.len()
         );
 
-        for locale in ["en.ts", "it.ts"] {
+        for locale in ["en.ts", "it.ts", "zh.ts"] {
             let src = std::fs::read_to_string(format!(
                 "{}/../src/i18n/{}",
                 env!("CARGO_MANIFEST_DIR"),

@@ -242,7 +242,7 @@ describe("multi-hop recall (issue #16)", () => {
 
     const models = (testEnv: Env) => (testEnv.AI.run as ReturnType<typeof vi.fn>).mock.calls.map(call => call[0]);
     expect(models(graphEnv)).toEqual(models(directEnv));
-    expect(models(graphEnv)).toEqual(["@cf/baai/bge-small-en-v1.5"]);
+    expect(models(graphEnv)).toEqual(["@cf/baai/bge-m3"]);
   });
 
   it("keeps a hop-2 answer's root score when the hop-1 bridge is filtered from hydration", async () => {

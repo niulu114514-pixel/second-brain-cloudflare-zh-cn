@@ -44,7 +44,7 @@ export const TAG_BOOST_MAX = 1.5;
 // log1p(|net|) * this step, clamped to the [1,5] importance band. Tunable.
 export const CONTRADICTION_IMPORTANCE_STEP = 1.0;
 
-export const EMBEDDING_MODEL = "@cf/baai/bge-small-en-v1.5";
+export const EMBEDDING_MODEL = "@cf/baai/bge-m3";
 
 export const CHUNK_MAX_CHARS = 1600;
 
@@ -107,7 +107,7 @@ export const WHEN_PASS_MAX_TOKENS = 1200;
 export const DIGEST_MAX_TOKENS = 400;
 
 export const VECTORIZE_FIX_HINT =
-  "run `npx wrangler vectorize create second-brain-vectors --dimensions=384 --metric=cosine`, or grant the build token Vectorize Edit and redeploy";
+  "run `npx wrangler vectorize create second-brain-vectors --dimensions=1024 --metric=cosine`, or grant the build token Vectorize Edit and redeploy";
 
 // Shared by REST and MCP recall so the two never diverge in what they claim:
 // a failed Vectorize call does not establish WHY it failed, so the assertion

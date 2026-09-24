@@ -9,7 +9,7 @@ The one-shot migration script that performed this split was removed after use; d
 | Layer | Path | May depend on |
 |-------|------|----------------|
 | Pure | `utils.js`, `credits.js` | — (DOM optional via injection) |
-| Infra | `js/i18n.js`, `js/state.js`, `js/api.js` | pure |
+| Infra | `js/i18n-zh.js`, `js/i18n.js`, `js/state.js`, `js/api.js` | pure |
 | UI kit | `js/theme.js`, `js/ui-chat.js`, `js/toast.js`, `js/coach.js`, `js/confirm-sheet.js` | pure, state |
 | Feature | `js/recall.js`, `js/recent.js`, `js/remember.js`, `js/memory-crud.js`, `js/settings.js`, `js/patterns.js`, `js/stale.js`, `js/loops.js`, `js/pending-due.js`, `js/due.js`, `js/install-guide.js`, `js/notifications.js`, `js/integrations.js`, `js/team.js`, `js/activity.js`, `js/projects.js`, `js/graph-canvas.js`, `js/brief.js`, `js/board.js`, `js/chart.js`, `js/home.js` | infra, UI kit, pure |
 | Shell | `js/nav.js`, `js/refresh.js`, `js/auth.js`, `js/download-app.js`, `js/app.js` | feature, infra |
@@ -26,7 +26,7 @@ warned about the ordering hazard it creates.
 ## Script load order
 
 ```
-i18n.js → utils.js → credits.js → state.js → toast.js → coach.js
+i18n-zh.js → i18n.js → utils.js → credits.js → state.js → toast.js → coach.js
 → confirm-sheet.js → api.js → theme.js → ui-chat.js
 → recall.js → recent.js → remember.js → memory-crud.js
 → settings.js → patterns.js → stale.js → loops.js → pending-due.js → due.js → install-guide.js → notifications.js → integrations.js → team.js → activity.js → projects.js
@@ -49,6 +49,7 @@ against the page rather than maintained by hand.
 | Board CSS | `css/board.css` |
 | "Memories over time" chart math and drawing | `js/chart.js` |
 | Global state | `js/state.js` |
+| Simplified Chinese catalog | `js/i18n-zh.js` |
 | Toasts | `js/toast.js` |
 | First-run coach marks (`renderCoachMark`) | `js/coach.js` |
 | Destructive-action sheet (`openDangerConfirm`) | `js/confirm-sheet.js` |

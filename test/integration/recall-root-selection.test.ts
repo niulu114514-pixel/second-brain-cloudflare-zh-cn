@@ -448,6 +448,7 @@ describe("recall root selection", () => {
     expect(env.AI.run).toHaveBeenCalledTimes(1);
     expect(env.AI.run).toHaveBeenCalledWith(DEFAULTS.EMBEDDING_MODEL, {
       text: [expectedInput[DEFAULT_EMBEDDING_QUERY_MODE]],
+      truncate_inputs: true,
     });
     expect(diagnostics.embeddingMode).toBe(DEFAULT_EMBEDDING_QUERY_MODE);
   });
@@ -463,7 +464,10 @@ describe("recall root selection", () => {
     const env = makeTestEnv(db, { VECTORIZE: makeVectorizeMock({ query }) });
 
     await recallEntries({ query: "why ledger", topK: 5, synthesize: false }, env, ctx, undefined, { embeddingQueryMode });
-    expect(env.AI.run).toHaveBeenCalledWith(DEFAULTS.EMBEDDING_MODEL, { text: [expectedInput] });
+    expect(env.AI.run).toHaveBeenCalledWith(DEFAULTS.EMBEDDING_MODEL, {
+      text: [expectedInput],
+      truncate_inputs: true,
+    });
     expect(query).toHaveBeenCalledTimes(1);
     expect((env.AI.run as ReturnType<typeof vi.fn>).mock.calls.map(call => call[0])).toEqual([DEFAULTS.EMBEDDING_MODEL]);
   });

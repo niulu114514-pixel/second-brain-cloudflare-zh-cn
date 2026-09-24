@@ -8,7 +8,7 @@ import { describe, it, expect } from "vitest";
 
 const ROOT = resolve(import.meta.dirname, "../..");
 
-function loadI18n(locale?: "en" | "it") {
+function loadI18n(locale?: "en" | "it" | "zh") {
   const store = new Map<string, string>();
   const els: any[] = [];
   const makeEl = (attrs: Record<string, string> = {}) => {
@@ -46,6 +46,7 @@ function loadI18n(locale?: "en" | "it") {
   };
   ctx.globalThis = ctx;
   vm.createContext(ctx);
+  vm.runInContext(readFileSync(resolve(ROOT, "public/js/i18n-zh.js"), "utf8"), ctx);
   vm.runInContext(readFileSync(resolve(ROOT, "public/js/i18n.js"), "utf8"), ctx);
   if (locale) ctx.initI18n(locale);
   else ctx.initI18n();
@@ -240,8 +241,8 @@ function scanCallSites() {
   const dynamicHits: DynamicHit[] = [];
 
   for (const file of listPublicFiles(PUBLIC_ROOT)) {
-    if (file.endsWith("/public/js/i18n.js")) continue; // the catalogs/engine, not a caller
-    const rel = relative(ROOT, file);
+    const rel = relative(ROOT, file).replaceAll("\\", "/");
+    if (rel === "public/js/i18n.js" || rel === "public/js/i18n-zh.js") continue;
     const content = readFileSync(file, "utf8");
 
     // This scan runs over raw file text with no comment stripping, so it is deliberately
@@ -378,6 +379,7 @@ describe("dashboard i18n", () => {
     const { ctx } = loadI18n("en");
     const en = vm.runInContext("I18N_EN", ctx);
     const it = vm.runInContext("I18N_IT", ctx);
+    const zh = vm.runInContext("I18N_ZH", ctx);
 
     function flatten(obj: any, prefix: string, out: string[]): string[] {
       for (const key of Object.keys(obj)) {
@@ -394,12 +396,16 @@ describe("dashboard i18n", () => {
 
     const enKeys = flatten(en, "", []).sort();
     const itKeys = flatten(it, "", []).sort();
+    const zhKeys = flatten(zh, "", []).sort();
     const enSet = new Set(enKeys);
     const itSet = new Set(itKeys);
+    const zhSet = new Set(zhKeys);
 
     expect(enKeys.length).toBeGreaterThan(400);
     expect(enKeys.filter((k) => !itSet.has(k)), "keys missing from I18N_IT").toEqual([]);
     expect(itKeys.filter((k) => !enSet.has(k)), "keys missing from I18N_EN").toEqual([]);
+    expect(enKeys.filter((k) => !zhSet.has(k)), "keys missing from I18N_ZH").toEqual([]);
+    expect(zhKeys.filter((k) => !enSet.has(k)), "extra keys in I18N_ZH").toEqual([]);
   });
 
   // The parity check above compares key SETS, which is blind to what the keys are
@@ -473,6 +479,8 @@ describe("dashboard i18n", () => {
     // PROPER NOUN — "Worker" names the Cloudflare Worker component; kept
     // unchanged in Italian same as "Second Brain" (auth.brand) above.
     "board.railVersion",
+    // Language names are autonyms in every catalog.
+    "menu.localeZh",
   ].sort();
 
   it("has no Italian string left as a copy of its English twin", () => {

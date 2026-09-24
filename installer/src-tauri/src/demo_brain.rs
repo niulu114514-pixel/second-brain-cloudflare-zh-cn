@@ -88,7 +88,7 @@ const DEPLOY_ENV: &str = "SECOND_BRAIN_DEMO_DEPLOY_AFTER";
 /// tests.
 const DEMO_LLM_MODEL: &str = "@cf/meta/llama-4-scout-17b-16e-instruct";
 const DEMO_INSIGHT_LLM_MODEL: &str = "@cf/openai/gpt-oss-120b";
-const DEMO_EMBEDDING_MODEL: &str = "@cf/baai/bge-small-en-v1.5";
+const DEMO_EMBEDDING_MODEL: &str = "@cf/baai/bge-m3";
 
 /// Returned when loopback cannot be bound at all. Port 1 refuses instantly, so
 /// the app reports "Couldn't reach your Second Brain" — the truth — rather than

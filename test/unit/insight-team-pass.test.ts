@@ -62,7 +62,7 @@ function makeAI() {
   });
   return {
     run: vi.fn().mockImplementation(async (model: string, opts: any) => {
-      if (model === "@cf/baai/bge-small-en-v1.5") return { data: [new Array(384).fill(0.1)] };
+      if (model === "@cf/baai/bge-m3") return { data: [new Array(1024).fill(0.1)] };
       const prompt = String(opts?.messages?.[0]?.content ?? "");
       const tier = prompt.match(/tier (\d+)/)?.[1] ?? "0";
       const payload = `{"insight": true, "shape": "contradiction", "text": "${PER_TIER[tier] ?? PER_TIER["0"]}"}`;

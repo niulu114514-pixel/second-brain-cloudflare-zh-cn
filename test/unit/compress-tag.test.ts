@@ -17,8 +17,8 @@ function makeSseStream(response: string) {
 function makeDigestAI(digestText = "Work on the API redesign is progressing well with REST chosen over GraphQL.") {
   return {
     run: vi.fn().mockImplementation(async (_model: string, opts: any) => {
-      if (_model === "@cf/baai/bge-small-en-v1.5")
-        return { data: [new Array(384).fill(0.1)] };
+      if (_model === "@cf/baai/bge-m3")
+        return { data: [new Array(1024).fill(0.1)] };
       if (opts?.stream)
         return makeSseStream(digestText);
       return { response: "3" };

@@ -72,7 +72,7 @@ beforeEach(async () => {
     // The tag-first recall branch fetches stored vectors by id and scores them locally.
     VECTORIZE: makeVectorizeMock({
       getByIds: (async (ids: string[]) =>
-        ids.map(id => ({ id, values: new Array(384).fill(0.1), metadata: { parentId: id.replace(/^v-/, "") } }))) as unknown as VectorizeIndex["getByIds"],
+        ids.map(id => ({ id, values: new Array(1024).fill(0.1), metadata: { parentId: id.replace(/^v-/, "") } }))) as unknown as VectorizeIndex["getByIds"],
     }),
   });
   await initializeDatabase(env);

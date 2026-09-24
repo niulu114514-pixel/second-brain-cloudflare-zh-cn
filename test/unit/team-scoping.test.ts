@@ -176,7 +176,7 @@ describe("digest rollup partitioning", () => {
   function makeDigestAI() {
     const prompts: string[] = [];
     const run = vi.fn().mockImplementation(async (_model: string, opts: any) => {
-      if (_model === "@cf/baai/bge-small-en-v1.5") return { data: [new Array(384).fill(0.1)] };
+      if (_model === "@cf/baai/bge-m3") return { data: [new Array(1024).fill(0.1)] };
       if (opts?.stream) {
         prompts.push(opts.messages[0].content as string);
         const body = new ReadableStream({

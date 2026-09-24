@@ -56,7 +56,7 @@ function envOver(s: SqliteD1): Env {
   const VECTORIZE = {
     ...makeVectorizeMock(),
     getByIds: async (ids: string[]) =>
-      ids.map(id => ({ id, values: new Array(384).fill(0.1), metadata: { parentId: id.replace(/^v-/, "") } })),
+      ids.map(id => ({ id, values: new Array(1024).fill(0.1), metadata: { parentId: id.replace(/^v-/, "") } })),
   } as unknown as VectorizeIndex;
   return makeTestEnv(undefined, { DB, VECTORIZE });
 }
@@ -141,7 +141,7 @@ describe("tag-scoped recall candidate query", () => {
     const env = makeTestEnv(db, {
       DB,
       VECTORIZE: makeVectorizeMock({
-        getByIds: async () => [{ id: "v-0", values: new Array(384).fill(0.1), metadata: { parentId: "e-0" } }],
+        getByIds: async () => [{ id: "v-0", values: new Array(1024).fill(0.1), metadata: { parentId: "e-0" } }],
       }),
     });
 

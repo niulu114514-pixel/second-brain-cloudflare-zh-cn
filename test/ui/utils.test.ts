@@ -311,7 +311,7 @@ describe("vectorizeHealthBanner", () => {
     const b = vectorizeHealthBanner({ ok: false, vectorize: { ok: false, indexName: "second-brain-vectors", error: "index not found" } });
     expect(b).not.toBeNull();
     expect(b.title).toContain("second-brain-vectors");
-    expect(b.command).toBe("npx wrangler vectorize create second-brain-vectors --dimensions=384 --metric=cosine");
+    expect(b.command).toBe("npx wrangler vectorize create second-brain-vectors --dimensions=1024 --metric=cosine");
     expect(b.gui).toContain("Vectorize Edit");
   });
 

@@ -25,7 +25,7 @@ function makeAI(insightPayload: string) {
   });
   return {
     run: vi.fn().mockImplementation(async (model: string, opts: any) => {
-      if (model === "@cf/baai/bge-small-en-v1.5") return { data: [new Array(384).fill(0.1)] };
+      if (model === "@cf/baai/bge-m3") return { data: [new Array(1024).fill(0.1)] };
       const prompt = String(opts?.messages?.[0]?.content ?? "");
       // The reasoning prompt is the only one that mentions two memories.
       return sse(prompt.includes("Memory A:") ? insightPayload : "3");
@@ -255,7 +255,7 @@ describe("runWeeklyInsights()", () => {
             c.close();
           },
         });
-        if (model === "@cf/baai/bge-small-en-v1.5") return { data: [new Array(384).fill(0.1)] };
+        if (model === "@cf/baai/bge-m3") return { data: [new Array(1024).fill(0.1)] };
         const prompt = String(opts?.messages?.[0]?.content ?? "");
         if (!prompt.includes("Memory A:")) return sse("3");
         const tier = prompt.match(/tier (\d+)/)?.[1] ?? "0";
@@ -575,7 +575,7 @@ describe("runWeeklyInsights()", () => {
             c.close();
           },
         });
-        if (model === "@cf/baai/bge-small-en-v1.5") return { data: [new Array(384).fill(0.1)] };
+        if (model === "@cf/baai/bge-m3") return { data: [new Array(1024).fill(0.1)] };
         const prompt = String(opts?.messages?.[0]?.content ?? "");
         if (!prompt.includes("Memory A:")) return sse("3");
         const tier = prompt.match(/tier (\d+)/)?.[1] ?? "0";
@@ -680,7 +680,7 @@ describe("runWeeklyInsights()", () => {
       });
       return {
         run: vi.fn().mockImplementation(async (model: string, opts: any) => {
-          if (model === "@cf/baai/bge-small-en-v1.5") return { data: [new Array(384).fill(0.1)] };
+          if (model === "@cf/baai/bge-m3") return { data: [new Array(1024).fill(0.1)] };
           const prompt = String(opts?.messages?.[0]?.content ?? "");
           prompts.push(prompt);
           return sse(prompt.includes("Memory A:") ? GOOD : "3");

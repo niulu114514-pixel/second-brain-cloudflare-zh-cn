@@ -60,7 +60,7 @@ describe("Merge re-embed carries the writer's workspace (src/capture/entry.ts)",
       }),
       AI: {
         run: vi.fn().mockImplementation(async (model: string, opts: any) => {
-          if (model === "@cf/baai/bge-small-en-v1.5") return { data: [new Array(384).fill(0.1)] };
+          if (model === "@cf/baai/bge-m3") return { data: [new Array(1024).fill(0.1)] };
           const prompt: string = (opts?.messages ?? []).map((m: any) => m.content).join("\n");
           if (prompt.includes("Choose exactly one action")) {
             return makeSseStream('{"action":"merge","target_id":"existing-id","merged_content":"Combined memory"}');
@@ -115,7 +115,7 @@ describe("Migration re-embed carries the row's workspace (src/migration/embeddin
       DB: d1.db as unknown as Env["DB"],
       VECTORIZE: makeVectorizeMock({ upsert }),
       AI: {
-        run: vi.fn().mockResolvedValue({ data: [new Array(384).fill(0.1)] }),
+        run: vi.fn().mockResolvedValue({ data: [new Array(1024).fill(0.1)] }),
       } as unknown as Ai,
       OAUTH_KV: makeMemoryKV(),
       AUTH_TOKEN: "test-token",
@@ -152,7 +152,7 @@ describe("update/append re-embed carries the row workspace, not the caller defau
     const env = {
       DB: d1.db as unknown as Env["DB"],
       VECTORIZE: makeVectorizeMock({ upsert }),
-      AI: { run: vi.fn().mockResolvedValue({ data: [new Array(384).fill(0.1)] }) } as unknown as Ai,
+      AI: { run: vi.fn().mockResolvedValue({ data: [new Array(1024).fill(0.1)] }) } as unknown as Ai,
       OAUTH_KV: makeMemoryKV(),
       AUTH_TOKEN: "test-token",
     } as Env;
@@ -184,7 +184,7 @@ describe("update/append re-embed carries the row workspace, not the caller defau
     const env = {
       DB: d1.db as unknown as Env["DB"],
       VECTORIZE: makeVectorizeMock({ upsert }),
-      AI: { run: vi.fn().mockResolvedValue({ data: [new Array(384).fill(0.1)] }) } as unknown as Ai,
+      AI: { run: vi.fn().mockResolvedValue({ data: [new Array(1024).fill(0.1)] }) } as unknown as Ai,
       OAUTH_KV: makeMemoryKV(),
       AUTH_TOKEN: "test-token",
     } as Env;
@@ -232,7 +232,7 @@ describe("/vectorize-pending carries the target row's workspace, not the admin's
       OAUTH_KV: makeMemoryKV(),
       VECTORIZE: makeVectorizeMock({ upsert }),
       AI: {
-        run: vi.fn().mockResolvedValue({ data: [new Array(384).fill(0.1)] }),
+        run: vi.fn().mockResolvedValue({ data: [new Array(1024).fill(0.1)] }),
       } as unknown as Ai,
     });
     await initializeDatabase(env);

@@ -56,7 +56,7 @@ function makeEnv(sqlite: SqliteD1, matches: any[], kv = makeMemoryKV()): Env {
     // only ever coincidentally matched single-seed tests; any scenario with
     // more than one seed needs each seed's own head vector to resolve.
     getByIds: vi.fn().mockImplementation(async (ids: string[]) =>
-      ids.map(id => ({ id, values: new Array(384).fill(0.1) }))),
+      ids.map(id => ({ id, values: new Array(1024).fill(0.1) }))),
     query: vi.fn().mockResolvedValue({ matches }),
   });
   return makeTestEnv(undefined, { DB: sqlite.db as any, VECTORIZE: vectorize, OAUTH_KV: kv });

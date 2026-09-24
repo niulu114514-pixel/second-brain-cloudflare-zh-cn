@@ -327,7 +327,7 @@ function vectorizeHealthBanner(health) {
   const name = health.vectorize.indexName || 'second-brain-vectors';
   return {
     title: t('upkeep.vectorizeBannerTitle', { name }),
-    command: 'npx wrangler vectorize create ' + name + ' --dimensions=384 --metric=cosine',
+    command: 'npx wrangler vectorize create ' + name + ' --dimensions=1024 --metric=cosine',
     gui: t('upkeep.vectorizeBannerGui'),
   };
 }

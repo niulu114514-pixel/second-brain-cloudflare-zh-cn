@@ -38,12 +38,12 @@ fn pin_dark_theme(window: &tauri::WebviewWindow) {
 /// idempotent so a re-render cannot produce two buttons.
 const CONNECTIONS_BUTTON_JS: &str = r#"(function () {
   var ID = 'sb-desktop-connections';
-  var LABELS = { en: __LABEL_EN__, it: __LABEL_IT__ };
-  var TITLES = { en: __TITLE_EN__, it: __TITLE_IT__ };
+  var LABELS = { en: __LABEL_EN__, it: __LABEL_IT__, zh: __LABEL_ZH__ };
+  var TITLES = { en: __TITLE_EN__, it: __TITLE_IT__, zh: __TITLE_ZH__ };
   function pick(map) {
     try {
       var loc = localStorage.getItem('sb-locale');
-      if (loc === 'it' || loc === 'en') return map[loc] || map.en;
+      if (loc === 'it' || loc === 'en' || loc === 'zh') return map[loc] || map.en;
     } catch (_) {}
     return map.en;
   }
@@ -83,12 +83,12 @@ const CONNECTIONS_BUTTON_JS: &str = r#"(function () {
 /// twice anyway.
 const SETTINGS_BUTTON_JS: &str = r#"(function () {
   var ID = 'sb-desktop-settings';
-  var LABELS = { en: __LABEL_EN__, it: __LABEL_IT__ };
-  var TITLES = { en: __TITLE_EN__, it: __TITLE_IT__ };
+  var LABELS = { en: __LABEL_EN__, it: __LABEL_IT__, zh: __LABEL_ZH__ };
+  var TITLES = { en: __TITLE_EN__, it: __TITLE_IT__, zh: __TITLE_ZH__ };
   function pick(map) {
     try {
       var loc = localStorage.getItem('sb-locale');
-      if (loc === 'it' || loc === 'en') return map[loc] || map.en;
+      if (loc === 'it' || loc === 'en' || loc === 'zh') return map[loc] || map.en;
     } catch (_) {}
     return map.en;
   }
@@ -123,15 +123,21 @@ fn settings_button_js() -> String {
         serde_json::to_string(i18n::t(Locale::En, Key::SettingsButtonLabel)).expect("string");
     let label_it =
         serde_json::to_string(i18n::t(Locale::It, Key::SettingsButtonLabel)).expect("string");
+    let label_zh =
+        serde_json::to_string(i18n::t(Locale::Zh, Key::SettingsButtonLabel)).expect("string");
     let title_en =
         serde_json::to_string(i18n::t(Locale::En, Key::SettingsButtonTooltip)).expect("string");
     let title_it =
         serde_json::to_string(i18n::t(Locale::It, Key::SettingsButtonTooltip)).expect("string");
+    let title_zh =
+        serde_json::to_string(i18n::t(Locale::Zh, Key::SettingsButtonTooltip)).expect("string");
     SETTINGS_BUTTON_JS
         .replace("__LABEL_EN__", &label_en)
         .replace("__LABEL_IT__", &label_it)
+        .replace("__LABEL_ZH__", &label_zh)
         .replace("__TITLE_EN__", &title_en)
         .replace("__TITLE_IT__", &title_it)
+        .replace("__TITLE_ZH__", &title_zh)
         .replace("__SETTINGS_PATH__", SETTINGS_PATH)
 }
 
@@ -140,15 +146,21 @@ fn connections_button_js() -> String {
         serde_json::to_string(i18n::t(Locale::En, Key::ConnectionsButtonLabel)).expect("string");
     let label_it =
         serde_json::to_string(i18n::t(Locale::It, Key::ConnectionsButtonLabel)).expect("string");
+    let label_zh =
+        serde_json::to_string(i18n::t(Locale::Zh, Key::ConnectionsButtonLabel)).expect("string");
     let title_en =
         serde_json::to_string(i18n::t(Locale::En, Key::ConnectionsButtonTooltip)).expect("string");
     let title_it =
         serde_json::to_string(i18n::t(Locale::It, Key::ConnectionsButtonTooltip)).expect("string");
+    let title_zh =
+        serde_json::to_string(i18n::t(Locale::Zh, Key::ConnectionsButtonTooltip)).expect("string");
     CONNECTIONS_BUTTON_JS
         .replace("__LABEL_EN__", &label_en)
         .replace("__LABEL_IT__", &label_it)
+        .replace("__LABEL_ZH__", &label_zh)
         .replace("__TITLE_EN__", &title_en)
         .replace("__TITLE_IT__", &title_it)
+        .replace("__TITLE_ZH__", &title_zh)
         .replace("__CONNECTIONS_PATH__", CONNECTIONS_PATH)
 }
 

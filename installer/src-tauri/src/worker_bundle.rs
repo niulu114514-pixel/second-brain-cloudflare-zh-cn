@@ -142,7 +142,7 @@ mod tests {
         assert_eq!(m.d1_binding, "DB");
         assert_eq!(m.vectorize_binding, "VECTORIZE");
         assert_eq!(m.vectorize_name, "second-brain-vectors");
-        assert_eq!(m.vectorize_dimensions, 384);
+        assert_eq!(m.vectorize_dimensions, 1024);
         assert_eq!(m.vectorize_metric, "cosine");
         assert_eq!(m.kv_binding, "OAUTH_KV");
         assert_eq!(m.ai_binding, "AI");

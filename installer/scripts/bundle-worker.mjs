@@ -24,7 +24,7 @@ const outDir = resolve(here, "..", "src-tauri", "worker-dist");
 
 // The Vectorize index is created by the installer, not declared in
 // wrangler.jsonc — these must match README.md / the Worker's expectations.
-const VECTORIZE_DIMENSIONS = 384;
+const VECTORIZE_DIMENSIONS = 1024;
 const VECTORIZE_METRIC = "cosine";
 
 // Minimal JSONC → JSON: strips // and /* */ comments outside of strings.

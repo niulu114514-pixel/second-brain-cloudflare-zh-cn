@@ -917,7 +917,7 @@ mod tests {
             "d1Name": "second-brain-db",
             "vectorizeBinding": "VECTORIZE",
             "vectorizeName": "second-brain-vectors",
-            "vectorizeDimensions": 384,
+            "vectorizeDimensions": 1024,
             "vectorizeMetric": "cosine",
             "kvBinding": "OAUTH_KV",
             "aiBinding": "AI"
@@ -1176,7 +1176,7 @@ mod tests {
         assert!(log.contains(&"register_subdomain:my-account".to_string()));
         assert!(log.contains(&"create_d1:second-brain-db".to_string()));
         assert!(log.contains(&"create_kv:second-brain-oauth".to_string()));
-        assert!(log.contains(&"create_vectorize:second-brain-vectors:384:cosine".to_string()));
+        assert!(log.contains(&"create_vectorize:second-brain-vectors:1024:cosine".to_string()));
         // 5 fixed bindings + 1 var
         assert!(log.contains(&"deploy:second-brain:6".to_string()));
         assert!(log.contains(

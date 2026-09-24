@@ -209,7 +209,7 @@ describe("recall wording for Vectorize failures (#352)", () => {
       id: "e1", content: "quarterly pricing review", tags: JSON.stringify(["shared"]), source: "api",
       created_at: Date.now(), vector_ids: JSON.stringify(ids), recall_count: 0, importance_score: 0,
     });
-    const values = new Array(384).fill(0.1);
+    const values = new Array(1024).fill(0.1);
     const getByIds = vi.fn()
       .mockResolvedValueOnce(ids.slice(0, VECTORIZE_GET_BY_IDS_BATCH).map(id => ({ id, values, metadata: { parentId: "e1", isUpdate: false } })))
       .mockRejectedValueOnce(new Error("vectorize internal error (code 5xx)"));

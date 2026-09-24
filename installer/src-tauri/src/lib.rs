@@ -13,6 +13,7 @@ mod commands;
 mod credits;
 mod demo_brain;
 mod i18n;
+mod i18n_zh;
 mod logging;
 mod mcp_config;
 mod migration;

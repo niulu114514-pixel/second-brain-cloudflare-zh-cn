@@ -246,7 +246,7 @@ describe("POST /capture", () => {
       }),
       AI: {
         run: vi.fn().mockImplementation(async (model: string) => {
-          if (model.startsWith("@cf/baai/bge")) return { data: [new Array(384).fill(0.1)] };
+          if (model.startsWith("@cf/baai/bge")) return { data: [new Array(1024).fill(0.1)] };
           return new ReadableStream({
             start(c) {
               c.enqueue(new TextEncoder().encode(`data: {"response":${JSON.stringify('{"action":"merge","target_id":"protected","merged_content":"merged"}')}}\n\n`));

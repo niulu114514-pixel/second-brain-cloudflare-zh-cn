@@ -11,6 +11,7 @@ const LOCALE_FILE: &str = "locale";
 pub enum Locale {
     En,
     It,
+    Zh,
 }
 
 impl Locale {
@@ -18,6 +19,7 @@ impl Locale {
         match s.trim().to_lowercase().as_str() {
             "en" => Some(Self::En),
             "it" => Some(Self::It),
+            "zh" | "zh-cn" | "zh-hans" => Some(Self::Zh),
             _ => None,
         }
     }
@@ -26,10 +28,11 @@ impl Locale {
         match self {
             Self::En => "en",
             Self::It => "it",
+            Self::Zh => "zh",
         }
     }
 
-    /// Same heuristic as the webview: `it*` → Italian, otherwise English.
+    /// Same heuristic as the webview: recognise Italian and Chinese, otherwise English.
     pub fn from_system() -> Self {
         #[cfg(target_os = "windows")]
         if let Some(locale) = windows_ui_language() {
@@ -37,8 +40,12 @@ impl Locale {
         }
         for key in ["LANG", "LC_ALL", "LC_MESSAGES", "LANGUAGE"] {
             if let Ok(lang) = std::env::var(key) {
-                if lang.to_lowercase().starts_with("it") {
+                let lang = lang.to_lowercase();
+                if lang.starts_with("it") {
                     return Self::It;
+                }
+                if lang.starts_with("zh") {
+                    return Self::Zh;
                 }
             }
         }
@@ -52,9 +59,11 @@ fn windows_ui_language() -> Option<Locale> {
     extern "system" {
         fn GetUserDefaultUILanguage() -> u16;
     }
-  // Italian primary language id is 0x10 (it-IT 0x0410, it-CH 0x0810).
+  // Primary language ids: Chinese 0x04; Italian 0x10.
     let lang = unsafe { GetUserDefaultUILanguage() };
-    if lang & 0x3FF == 0x10 {
+    if lang & 0x3FF == 0x04 {
+        Some(Locale::Zh)
+    } else if lang & 0x3FF == 0x10 {
         Some(Locale::It)
     } else {
         None
@@ -175,6 +184,9 @@ pub enum Key {
 }
 
 pub fn t(locale: Locale, key: Key) -> &'static str {
+    if locale == Locale::Zh {
+        return crate::i18n_zh::t(key).unwrap_or_else(|| t(Locale::En, key));
+    }
     match (locale, key) {
         // Menu / tray — EN
         (Locale::En, Key::MenuOpenDashboard) => "Open Dashboard",
@@ -580,6 +592,7 @@ sicuro del dispositivo."
             "un indice di ricerca intelligente"
         }
         (Locale::It, Key::ResourceKindWebApp) => "un'app web",
+        (Locale::Zh, _) => unreachable!("Chinese locale is handled before the bilingual match"),
     }
 }
 
@@ -749,6 +762,7 @@ mod tests {
     fn parse_locale() {
         assert_eq!(Locale::parse("en"), Some(Locale::En));
         assert_eq!(Locale::parse("IT"), Some(Locale::It));
+        assert_eq!(Locale::parse("zh-CN"), Some(Locale::Zh));
         assert_eq!(Locale::parse("fr"), None);
     }
 
@@ -794,12 +808,14 @@ mod tests {
     }
 
     #[test]
-    fn every_key_has_non_empty_en_and_it_string() {
+    fn every_key_has_non_empty_string_in_each_locale() {
         for &key in all_keys() {
             let en = t(Locale::En, key);
             let it = t(Locale::It, key);
+            let zh = t(Locale::Zh, key);
             assert!(!en.is_empty(), "empty EN string for {key:?}");
             assert!(!it.is_empty(), "empty IT string for {key:?}");
+            assert!(!zh.is_empty(), "empty ZH string for {key:?}");
         }
     }
 }

@@ -128,7 +128,7 @@ function envOf(s: SqliteD1): Env {
     OAUTH_KV: makeMemoryKV(),
     VECTORIZE: makeVectorizeMock({
       getByIds: vi.fn().mockImplementation(async (ids: string[]) =>
-        ids.map(id => ({ id, values: new Array(384).fill(0.1) }))),
+        ids.map(id => ({ id, values: new Array(1024).fill(0.1) }))),
       query: vi.fn().mockResolvedValue({
         matches: [
           { id: "a", score: 0.99, metadata: { parentId: "a" } },
@@ -212,7 +212,7 @@ function supersedesEnvOf(s: SqliteD1): Env {
     OAUTH_KV: makeMemoryKV(),
     VECTORIZE: makeVectorizeMock({
       getByIds: vi.fn().mockImplementation(async (ids: string[]) =>
-        ids.map(id => ({ id, values: new Array(384).fill(0.1) }))),
+        ids.map(id => ({ id, values: new Array(1024).fill(0.1) }))),
     }),
   });
 }

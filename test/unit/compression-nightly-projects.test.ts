@@ -29,7 +29,7 @@ function digestAI() {
   });
   return {
     run: vi.fn().mockImplementation(async (model: string, opts: any) => {
-      if (model.startsWith("@cf/baai/bge")) return { data: [new Array(384).fill(0.1)] };
+      if (model.startsWith("@cf/baai/bge")) return { data: [new Array(1024).fill(0.1)] };
       if (opts?.stream) return sse("A digest of the memories.");
       return { response: "3" };
     }),

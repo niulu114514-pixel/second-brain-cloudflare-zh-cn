@@ -264,7 +264,7 @@ describe("POST /update", () => {
     const { store, mock } = makeStatefulVectorize([
       {
         id: "entry-abc",
-        values: new Array(384).fill(0.1),
+        values: new Array(1024).fill(0.1),
         metadata: { content: "Original content", parentId: "entry-abc", chunkIndex: 0, totalChunks: 1 },
       },
     ]);

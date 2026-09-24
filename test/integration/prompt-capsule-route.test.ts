@@ -1141,7 +1141,7 @@ describe("prompt capsule routes", () => {
   ): Ai {
     return {
       run: vi.fn().mockImplementation(async (model: string, opts: { messages?: { content: string }[] }) => {
-        if (model.startsWith("@cf/baai/bge")) return { data: [new Array(384).fill(0.1)] };
+        if (model.startsWith("@cf/baai/bge")) return { data: [new Array(1024).fill(0.1)] };
         const prompt = (opts?.messages ?? []).map(m => m.content).join("\n");
         const response = prompt.includes("Choose exactly one action")
           ? mergeResponse

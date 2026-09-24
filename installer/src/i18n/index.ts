@@ -1,12 +1,13 @@
 import { en } from "./en";
 import { it } from "./it";
+import { zh } from "./zh";
 import type { Locale, Messages } from "./types";
 import { invoke } from "@tauri-apps/api/core";
 
 export const LOCALE_STORAGE_KEY = "sb-locale";
 export const LOCALE_CHANGE_EVENT = "sb-locale-change";
 
-const catalogs: Record<Locale, Messages> = { en, it };
+const catalogs: Record<Locale, Messages> = { en, it, zh };
 
 let currentLocale: Locale = "en";
 
@@ -19,18 +20,19 @@ function syncLocaleToRust(locale: Locale): void {
 function readStoredLocale(): Locale {
   try {
     const stored = localStorage.getItem(LOCALE_STORAGE_KEY);
-    if (stored === "en" || stored === "it") return stored;
+    if (stored === "en" || stored === "it" || stored === "zh") return stored;
   } catch {
     /* private mode / unavailable */
   }
   const nav = navigator.language?.toLowerCase() ?? "";
   if (nav.startsWith("it")) return "it";
+  if (nav.startsWith("zh")) return "zh";
   return "en";
 }
 
 export function initI18n(): Locale {
   currentLocale = readStoredLocale();
-  document.documentElement.lang = currentLocale === "it" ? "it" : "en";
+  document.documentElement.lang = currentLocale;
   syncLocaleToRust(currentLocale);
   return currentLocale;
 }
@@ -47,7 +49,7 @@ export function setLocale(locale: Locale): void {
   } catch {
     /* ignore */
   }
-  document.documentElement.lang = locale === "it" ? "it" : "en";
+  document.documentElement.lang = locale;
   syncLocaleToRust(locale);
   window.dispatchEvent(new CustomEvent(LOCALE_CHANGE_EVENT, { detail: locale }));
 }
@@ -80,6 +82,7 @@ export function settingsSection(onChange?: () => void): HTMLElement {
   for (const opt of [
     { value: "en" as Locale, label: t("settings.english") },
     { value: "it" as Locale, label: t("settings.italian") },
+    { value: "zh" as Locale, label: t("settings.chinese") },
   ]) {
     const o = document.createElement("option");
     o.value = opt.value;

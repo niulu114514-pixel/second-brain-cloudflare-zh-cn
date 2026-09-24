@@ -77,7 +77,7 @@ describe("migration routes", () => {
     // Named "at least" because the projection is a lower bound — the chunker's
     // sentence snapping can only produce more.
     expect(typeof body.chunksAtLeast).toBe("number");
-    expect(body.model).toBe("@cf/baai/bge-small-en-v1.5");
+    expect(body.model).toBe("@cf/baai/bge-m3");
   });
 
   it("reports the configured model, so the app can spot a stale ledger", async () => {

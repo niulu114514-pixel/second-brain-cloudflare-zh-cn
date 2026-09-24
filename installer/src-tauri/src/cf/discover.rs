@@ -519,7 +519,7 @@ mod tests {
     /// that is no longer on screen.
     #[test]
     fn the_signin_footnote_names_the_manual_button_that_exists() {
-        for locale in ["en.ts", "it.ts"] {
+        for locale in ["en.ts", "it.ts", "zh.ts"] {
             let path = format!("{}/../src/i18n/{}", env!("CARGO_MANIFEST_DIR"), locale);
             let src = std::fs::read_to_string(&path).expect("read locale file");
 

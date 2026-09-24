@@ -634,7 +634,7 @@ describe("recall keyword arm: FTS5 with LIKE fallback", () => {
       OAUTH_KV: makeMemoryKV(),
       VECTORIZE: makeVectorizeMock({
         query: vi.fn().mockRejectedValue(new Error("index unavailable")),
-        getByIds: vi.fn().mockResolvedValue([{ id: "v1", values: new Array(384).fill(0.1), metadata: { parentId: "tagged-1" } }]),
+        getByIds: vi.fn().mockResolvedValue([{ id: "v1", values: new Array(1024).fill(0.1), metadata: { parentId: "tagged-1" } }]),
       }),
     });
     sqlite.seed({ id: "tagged-1", content: "widget gadget", createdAt: 1, tags: ["project:x"], vectorIds: ["v1"] });

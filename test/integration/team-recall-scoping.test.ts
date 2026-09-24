@@ -155,7 +155,7 @@ describe("recallEntries with an Identity", () => {
     // arm and keyword-only rows are not admissible. parentId metadata is what
     // lets hydration resolve the vector hits back to entry rows.
     const vectorFor = (entryId: string) => ({
-      id: `v-${entryId}`, values: new Array(384).fill(0.2), metadata: { parentId: entryId },
+      id: `v-${entryId}`, values: new Array(1024).fill(0.2), metadata: { parentId: entryId },
     });
     for (const [id, ws] of [["t-own", "ws-a"], ["t-co", "ws-co"], ["t-foreign", "ws-b"]] as const) {
       sqlite.seed({ id, content: `alpha tagged ${id}`, createdAt: 1000, tags: ["proj"], vectorIds: [`v-${id}`] });

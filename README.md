@@ -2,6 +2,8 @@
   <a href="https://www.thesecondbrain.dev"><img src="https://www.thesecondbrain.dev/logos/sb-lockup.svg" alt="Second Brain" width="400"></a>
 </p>
 
+**[简体中文说明](README.zh-CN.md) · English**
+
 **Private memory for you. Shared memory for your team. Available to every MCP-compatible AI tool you use.**
 
 Now with **Team Edition** — private personal layers plus a shared team layer, in one Worker.
@@ -235,7 +237,7 @@ When Cloudflare shows the configuration form, enter:
 | FIELD | VALUE |
 | --- | --- |
 | AUTH_TOKEN | The token you created |
-| DIMENSION | `384` |
+| DIMENSION | `1024` |
 | METRIC | `cosine` |
 
 After deployment, connect compatible clients to:

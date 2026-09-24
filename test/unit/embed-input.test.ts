@@ -6,7 +6,10 @@ import { makeTestEnv } from "../helpers/make-env";
 describe("embed() input shape", () => {
   it("sends the bge-en models the plain text array they accept", async () => {
     const env = makeTestEnv();
-    await embed("hello", env, DEFAULTS);
+    await embed("hello", env, {
+      ...DEFAULTS,
+      EMBEDDING_MODEL: "@cf/baai/bge-small-en-v1.5",
+    });
     expect(vi.mocked(env.AI.run).mock.calls[0][1]).toEqual({ text: ["hello"] });
   });
 

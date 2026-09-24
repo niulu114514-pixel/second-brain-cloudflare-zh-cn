@@ -1,4 +1,4 @@
-// Dashboard i18n (en / it). Same storage key as the desktop installer.
+// Dashboard i18n (en / it / zh). Same storage key as the desktop installer.
 // Classic script: exposes t, tPlural, initI18n, applyI18nDom, getLocale, localeTag, formatDateUI.
 
 const SB_LOCALE_KEY = 'sb-locale'
@@ -341,6 +341,7 @@ const I18N_EN = {
     language: 'Language',
     localeEn: 'English',
     localeIt: 'Italian',
+    localeZh: '简体中文',
     themeLight: 'Light',
     themeDark: 'Dark',
     themeAuto: 'Auto',
@@ -1329,6 +1330,7 @@ const I18N_IT = {
     language: 'Lingua',
     localeEn: 'Inglese',
     localeIt: 'Italiano',
+    localeZh: '简体中文',
     themeLight: 'Chiaro',
     themeDark: 'Scuro',
     themeAuto: 'Automatico',
@@ -1940,7 +1942,13 @@ const I18N_IT = {
   },
 }
 
-const I18N_CATALOGS = { en: I18N_EN, it: I18N_IT }
+// Some unit-test harnesses load this file in isolation; keep English as a
+// safe fallback there. Production loads i18n-zh.js immediately before this.
+const I18N_CATALOGS = {
+  en: I18N_EN,
+  it: I18N_IT,
+  zh: typeof I18N_ZH === 'undefined' ? I18N_EN : I18N_ZH,
+}
 
 let currentLocale = 'en'
 
@@ -1981,7 +1989,9 @@ function getLocale() {
 }
 
 function localeTag() {
-  return currentLocale === 'it' ? 'it-IT' : 'en-US'
+  if (currentLocale === 'it') return 'it-IT'
+  if (currentLocale === 'zh') return 'zh-CN'
+  return 'en-US'
 }
 
 /**
@@ -2024,7 +2034,7 @@ function formatNumberUI(n) {
 function readStoredLocale() {
   try {
     const stored = localStorage.getItem(SB_LOCALE_KEY)
-    if (stored === 'en' || stored === 'it') return stored
+    if (stored === 'en' || stored === 'it' || stored === 'zh') return stored
   } catch (_) {
     /* private mode */
   }
@@ -2033,12 +2043,15 @@ function readStoredLocale() {
     : ''
   ).toLowerCase()
   if (nav.startsWith('it')) return 'it'
+  if (nav.startsWith('zh')) return 'zh'
   return 'en'
 }
 
 function initI18n(forceLocale) {
   currentLocale =
-    forceLocale === 'en' || forceLocale === 'it' ? forceLocale : readStoredLocale()
+    forceLocale === 'en' || forceLocale === 'it' || forceLocale === 'zh'
+      ? forceLocale
+      : readStoredLocale()
   try {
     localStorage.setItem(SB_LOCALE_KEY, currentLocale)
   } catch (_) {
@@ -2051,7 +2064,7 @@ function initI18n(forceLocale) {
 }
 
 function setLocale(loc) {
-  if (loc !== 'en' && loc !== 'it') return
+  if (loc !== 'en' && loc !== 'it' && loc !== 'zh') return
   try {
     localStorage.setItem(SB_LOCALE_KEY, loc)
   } catch (_) {

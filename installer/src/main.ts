@@ -764,9 +764,10 @@ function brainPickerScreen(found: DiscoveredBrain[]) {
  * anything is even sent to Cloudflare, so the member-recovery ghost action
  * would otherwise appear on a field the user simply hasn't filled in yet.
  */
-const WRONG_CREDENTIAL_ERROR_TEXT: Record<"en" | "it", string> = {
+const WRONG_CREDENTIAL_ERROR_TEXT: Record<"en" | "it" | "zh", string> = {
   en: "That password or team sign-in token does not work for this Second Brain. Check the invitation or password and try again.",
   it: "Questa password o questo token di accesso del team non funziona per questo Second Brain. Controlla l'invito o la password e riprova.",
+  zh: "该密码或团队登录令牌对此第二大脑不适用。请检查邀请或密码，再试一次。",
 };
 
 function isCredentialError(errorMsg: string | undefined): boolean {

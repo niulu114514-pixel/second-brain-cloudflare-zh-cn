@@ -17,11 +17,11 @@ export function makeVectorizeMock(overrides: Partial<VectorizeIndex> = {}): Vect
 export function makeAIMock(): Ai {
   return {
     run: vi.fn().mockImplementation(async (model: string) => {
-      // Every bge-* model here is an embedding call (bge-small is the
-      // shipped default; bge-base/large/m3 are config-selectable) — anything
+      // Every bge-* model here is an embedding call (bge-m3 is the shipped
+      // default; the English bge variants are config-selectable) — anything
       // else is assumed to be an LLM chat completion, below.
       if (model.startsWith("@cf/baai/bge"))
-        return { data: [new Array(384).fill(0.1)] };
+        return { data: [new Array(1024).fill(0.1)] };
       return new ReadableStream({
         start(c) {
           c.enqueue(new TextEncoder().encode('data: {"response":"3"}\n\n'));

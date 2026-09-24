@@ -44,7 +44,7 @@ describe("MCP audit trail", () => {
       }),
       AI: {
         run: vi.fn().mockImplementation(async (model: string) => {
-          if (model === "@cf/baai/bge-small-en-v1.5") return { data: [new Array(384).fill(0.1)] };
+          if (model === "@cf/baai/bge-m3") return { data: [new Array(1024).fill(0.1)] };
           return { response: '{"importance":2,"canonical":false,"kind":"semantic"}' };
         }),
       } as unknown as Ai,

@@ -1,5 +1,5 @@
 /**
- * The desktop app's two message catalogs, checked against each other.
+ * The desktop app's message catalogs, checked against each other.
  *
  * This check did not exist. `installer/src/i18n/{en,it}.ts` are constrained by
  * the `Messages` interface, but CI never compiles the installer's TypeScript —
@@ -14,6 +14,7 @@
 import { describe, it, expect } from "vitest";
 import { en } from "../../installer/src/i18n/en";
 import { it as itCatalog } from "../../installer/src/i18n/it";
+import { zh as zhCatalog } from "../../installer/src/i18n/zh";
 
 type Catalog = Record<string, unknown>;
 
@@ -33,6 +34,7 @@ function flatten(node: unknown, prefix = ""): Map<string, unknown> {
 
 const enFlat = flatten(en);
 const itFlat = flatten(itCatalog);
+const zhFlat = flatten(zhCatalog);
 
 describe("the installer's message catalogs", () => {
   it("carries the same key in both languages", () => {
@@ -40,11 +42,13 @@ describe("the installer's message catalogs", () => {
     // equality below pass forever.
     expect(enFlat.size).toBeGreaterThan(400);
     expect([...enFlat.keys()].sort()).toEqual([...itFlat.keys()].sort());
+    expect([...enFlat.keys()].sort()).toEqual([...zhFlat.keys()].sort());
   });
 
   it("has no leaf that is not a string", () => {
     for (const [path, value] of enFlat) expect(typeof value, `en ${path}`).toBe("string");
     for (const [path, value] of itFlat) expect(typeof value, `it ${path}`).toBe("string");
+    for (const [path, value] of zhFlat) expect(typeof value, `zh ${path}`).toBe("string");
   });
 });
 

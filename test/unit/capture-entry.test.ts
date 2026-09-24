@@ -15,8 +15,8 @@ function makeCtx() {
 function makeContradictionAI(response: string) {
   return {
     run: vi.fn().mockImplementation(async (model: string) => {
-      if (model === "@cf/baai/bge-small-en-v1.5")
-        return { data: [new Array(384).fill(0.1)] };
+      if (model === "@cf/baai/bge-m3")
+        return { data: [new Array(1024).fill(0.1)] };
       return new ReadableStream({
         start(c) {
           c.enqueue(new TextEncoder().encode(`data: {"response":${JSON.stringify(response)}}\n\n`));
@@ -451,8 +451,8 @@ describe("captureEntry()", () => {
     env = makeTestEnv(db, {
       AI: {
         run: vi.fn().mockImplementation(async (model: string) => {
-          if (model === "@cf/baai/bge-small-en-v1.5")
-            return { data: [new Array(384).fill(0.1)] };
+          if (model === "@cf/baai/bge-m3")
+            return { data: [new Array(1024).fill(0.1)] };
           return makeSseStream('{"importance":5,"canonical":true}');
         }),
       } as unknown as Ai,
@@ -478,8 +478,8 @@ describe("captureEntry()", () => {
     env = makeTestEnv(db, {
       AI: {
         run: vi.fn().mockImplementation(async (model: string) => {
-          if (model === "@cf/baai/bge-small-en-v1.5")
-            return { data: [new Array(384).fill(0.1)] };
+          if (model === "@cf/baai/bge-m3")
+            return { data: [new Array(1024).fill(0.1)] };
           return makeSseStream('{"importance":2,"canonical":false}');
         }),
       } as unknown as Ai,
@@ -519,8 +519,8 @@ describe("captureEntry()", () => {
       }),
       AI: {
         run: vi.fn().mockImplementation(async (model: string) => {
-          if (model === "@cf/baai/bge-small-en-v1.5")
-            return { data: [new Array(384).fill(0.1)] };
+          if (model === "@cf/baai/bge-m3")
+            return { data: [new Array(1024).fill(0.1)] };
           // Both the smart-merge/contradiction call and the classify call get this
           // stream. The contradiction handler parses "contradicts/conflicting_id";
           // the classify handler parses "importance/canonical". Returning a JSON
@@ -570,8 +570,8 @@ describe("captureEntry()", () => {
     env = makeTestEnv(db, {
       AI: {
         run: vi.fn().mockImplementation(async (model: string) => {
-          if (model === "@cf/baai/bge-small-en-v1.5")
-            return { data: [new Array(384).fill(0.1)] };
+          if (model === "@cf/baai/bge-m3")
+            return { data: [new Array(1024).fill(0.1)] };
           return makeSseStream('{"importance":2,"canonical":false,"kind":"episodic"}');
         }),
       } as unknown as Ai,
@@ -597,8 +597,8 @@ describe("captureEntry()", () => {
     env = makeTestEnv(db, {
       AI: {
         run: vi.fn().mockImplementation(async (model: string) => {
-          if (model === "@cf/baai/bge-small-en-v1.5")
-            return { data: [new Array(384).fill(0.1)] };
+          if (model === "@cf/baai/bge-m3")
+            return { data: [new Array(1024).fill(0.1)] };
           return makeSseStream('{"importance":3,"canonical":false}');
         }),
       } as unknown as Ai,

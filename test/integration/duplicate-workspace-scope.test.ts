@@ -60,7 +60,7 @@ function seed(id: string, workspaceId: string, actorId: string, content: string)
 function scriptedAI(verdict: string, prompts: string[]): Ai {
   return {
     run: vi.fn().mockImplementation(async (model: string, opts: any) => {
-      if (model === "@cf/baai/bge-small-en-v1.5") return { data: [new Array(384).fill(0.1)] };
+      if (model === "@cf/baai/bge-m3") return { data: [new Array(1024).fill(0.1)] };
       prompts.push(String(opts?.messages?.[0]?.content ?? ""));
       return new ReadableStream({
         start(c) {

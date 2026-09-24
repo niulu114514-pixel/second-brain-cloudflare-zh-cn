@@ -284,7 +284,7 @@ describe("recall stays inside D1's statement limits", () => {
         VECTORIZE: makeVectorizeMock({
           getByIds: vi.fn(async (ids: string[]) => ids.map(id => ({
             id,
-            values: new Array(384).fill(0.1),
+            values: new Array(1024).fill(0.1),
             metadata: { parentId: id.replace(/^v-/, "") },
           }))),
         }),

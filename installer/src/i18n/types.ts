@@ -1,4 +1,4 @@
-export type Locale = "en" | "it";
+export type Locale = "en" | "it" | "zh";
 
 /** One named level of a multi-value control (#246). */
 export type LevelCopy = {
@@ -40,6 +40,7 @@ export type Messages = {
     languageDesc: string;
     english: string;
     italian: string;
+    chinese: string;
   };
   settingsPanel: {
     title: string;
